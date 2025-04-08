@@ -1,5 +1,5 @@
 # 临时禁用模块签名验证功能
-CONFIG_MODULE_SIG = n
+CONFIG_MODULE_SIG=n
 
 # KDIR 是开发板所使用的源代码的 Linux 内核源码的根目录
 KDIR := /home/ericedward/linux_space/linux_kernel/my_linux_kernel/linux-stm32mp-5.4.31-r0/linux-5.4.31/
