@@ -28,9 +28,12 @@ struct chrdev_data_t {
 static struct chrdev_data_t dev_data;
 
 /* 定义 chrdev 的 file_operations 接口函数 */
-static int chrdev_open(struct inode *inode, struct file *file) {
-    printk("%s %s line %d\n", __FILE__, __FUNCTION__, __LINE__);
-    file->private_data = &dev_data;  // 关联私有数据：内核进程关联字符设备驱动.
+static int chrdev_open(struct inode *inode, struct file *filp) {
+	// 关联私有数据：内核进程关联字符设备驱动.
+	// filp->private_data 在 struct file 中定义的就是一个 void 类型的指针。
+	// 因此 ((struct file*) filp)->private_data 这个 void 类型的指针，可以灵活指向甲方自定义的私有数据空间。
+	// 内核的字符设备驱动模块将其自定义数据传递给其匹配的进程，就是通过 filp->private_data 挂接。
+    filp->private_data = &dev_data;  
     printk(KERN_INFO "内核 chrdev_open：设备已被 pid %d 打开！\n", current->pid);
     return 0;
 }
@@ -78,7 +81,7 @@ loff_t chrdev_llseek (struct file *filp, loff_t offset, int whence){
 static ssize_t chrdev_read(struct file *filp, char __user *buf, size_t len, loff_t *off) {
     
     struct chrdev_data_t *data = filp->private_data;  //获取进程上挂接的字符设备私有数据部分的指针。
-    size_t to_read = min_t(size_t, len, data->data_len - *off); //min 取最小值
+    size_t to_read = min_t(size_t, len, data->data_len - *off); //min 截断，取最小值
     
     if (to_read == 0) {
         printk(KERN_INFO "内核 chrdev_read：内核数据读出完毕！\n");
@@ -110,7 +113,7 @@ static ssize_t chrdev_read(struct file *filp, char __user *buf, size_t len, loff
  */
 static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t len, loff_t *off) {
     struct chrdev_data_t *data = filp->private_data;
-    size_t to_write = min_t(size_t, len, data->buf_size - *off); //min
+    size_t to_write = min_t(size_t, len, data->buf_size - *off); //min，二进制安全，取小。OK。
     
     if (to_write == 0) {
         printk(KERN_INFO "内核 chrdev_write：缓冲区已满，无法继续写入！\n");
@@ -123,7 +126,7 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t le
     }
     
     *off += to_write;
-    data->data_len = max_t(size_t, data->data_len, *off); //max
+    data->data_len = max_t(size_t, data->data_len, *off); //max，二进制安全，取大。OK。
     printk(KERN_INFO "内核 chrdev_write：已写入内核： %zu 字节的数据，当下偏移位位于 %lld 处。\n", to_write, *off);
     return to_write;
 }
@@ -252,48 +255,89 @@ min(x, y)最终展开为__careful_cmp(x, y, <)，其核心通过__typecheck宏�
 */
 
 /* 
+xref: /linux-5.4.290/include/linux/fs.h
 struct file_operations {
-	struct module *owner;
-	loff_t (*llseek) (struct file *, loff_t, int);
-	ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
-	ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
-	ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
-	ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
-	int (*iopoll)(struct kiocb *kiocb, bool spin);
-	int (*iterate) (struct file *, struct dir_context *);
-	int (*iterate_shared) (struct file *, struct dir_context *);
-	__poll_t (*poll) (struct file *, struct poll_table_struct *);
-	long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
-	long (*compat_ioctl) (struct file *, unsigned int, unsigned long);
-	int (*mmap) (struct file *, struct vm_area_struct *);
-	unsigned long mmap_supported_flags;
-	int (*open) (struct inode *, struct file *);
-	int (*flush) (struct file *, fl_owner_t id);
-	int (*release) (struct inode *, struct file *);
-	int (*fsync) (struct file *, loff_t, loff_t, int datasync);
-	int (*fasync) (int, struct file *, int);
-	int (*lock) (struct file *, int, struct file_lock *);
-	ssize_t (*sendpage) (struct file *, struct page *, int, size_t, loff_t *, int);
-	unsigned long (*get_unmapped_area)(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
-	int (*check_flags)(int);
-	int (*flock) (struct file *, int, struct file_lock *);
-	ssize_t (*splice_write)(struct pipe_inode_info *, struct file *, loff_t *, size_t, unsigned int);
-	ssize_t (*splice_read)(struct file *, loff_t *, struct pipe_inode_info *, size_t, unsigned int);
-	int (*setlease)(struct file *, long, struct file_lock **, void **);
-	long (*fallocate)(struct file *file, int mode, loff_t offset,
-			  loff_t len);
-	void (*show_fdinfo)(struct seq_file *m, struct file *f);
+    struct module *owner;
+    loff_t (*llseek) (struct file *, loff_t, int);
+    ssize_t (*read) (struct file *, char __user *, size_t, loff_t *);
+    ssize_t (*write) (struct file *, const char __user *, size_t, loff_t *);
+    ssize_t (*read_iter) (struct kiocb *, struct iov_iter *);
+    ssize_t (*write_iter) (struct kiocb *, struct iov_iter *);
+    int (*iopoll)(struct kiocb *kiocb, bool spin);
+    int (*iterate) (struct file *, struct dir_context *);
+    int (*iterate_shared) (struct file *, struct dir_context *);
+    __poll_t (*poll) (struct file *, struct poll_table_struct *);
+    long (*unlocked_ioctl) (struct file *, unsigned int, unsigned long);
+    long (*compat_ioctl) (struct file *, unsigned int, unsigned long);
+    int (*mmap) (struct file *, struct vm_area_struct *);
+    unsigned long mmap_supported_flags;
+    int (*open) (struct inode *, struct file *);
+    int (*flush) (struct file *, fl_owner_t id);
+    int (*release) (struct inode *, struct file *);
+    int (*fsync) (struct file *, loff_t, loff_t, int datasync);
+    int (*fasync) (int, struct file *, int);
+    int (*lock) (struct file *, int, struct file_lock *);
+    ssize_t (*sendpage) (struct file *, struct page *, int, size_t, loff_t *, int);
+    unsigned long (*get_unmapped_area)(struct file *, unsigned long, unsigned long, unsigned long, unsigned long);
+    int (*check_flags)(int);
+    int (*flock) (struct file *, int, struct file_lock *);
+    ssize_t (*splice_write)(struct pipe_inode_info *, struct file *, loff_t *, size_t, unsigned int);
+    ssize_t (*splice_read)(struct file *, loff_t *, struct pipe_inode_info *, size_t, unsigned int);
+    int (*setlease)(struct file *, long, struct file_lock **, void **);
+    long (*fallocate)(struct file *file, int mode, loff_t offset,
+              loff_t len);
+    void (*show_fdinfo)(struct seq_file *m, struct file *f);
 #ifndef CONFIG_MMU
-	unsigned (*mmap_capabilities)(struct file *);
+    unsigned (*mmap_capabilities)(struct file *);
 #endif
-	ssize_t (*copy_file_range)(struct file *, loff_t, struct file *,
-			loff_t, size_t, unsigned int);
-	loff_t (*remap_file_range)(struct file *file_in, loff_t pos_in,
-				   struct file *file_out, loff_t pos_out,
-				   loff_t len, unsigned int remap_flags);
-	int (*fadvise)(struct file *, loff_t, loff_t, int);
-	bool may_pollfree;
+    ssize_t (*copy_file_range)(struct file *, loff_t, struct file *,
+            loff_t, size_t, unsigned int);
+    loff_t (*remap_file_range)(struct file *file_in, loff_t pos_in,
+                   struct file *file_out, loff_t pos_out,
+                   loff_t len, unsigned int remap_flags);
+    int (*fadvise)(struct file *, loff_t, loff_t, int);
+    bool may_pollfree;
 } __randomize_layout;
+*/
+
+/*
+在 Linux 内核中，struct file 的定义位于 include/linux/fs.h 头文件中。这是文件操作和文件描述符相关核心数据结构的定义位置。
+所在行数：938~976.
+struct file 的作用：
+表示一个“已打开的文件”的上下文信息。
+每个打开的文件（例如通过 open() 系统调用）在内核中对应一个 struct file 实例。
+包含文件读写位置（f_pos）、访问模式（f_mode）、文件操作函数集（f_op）等关键信息。
+
+xref: /linux-5.4.290/include/linux/fs.h
+所在行数：938~976.
+struct file {
+    union {
+        struct llist_node   fu_llist;
+        struct rcu_head     fu_rcuhead;
+    } f_u;
+    struct path     f_path;
+    struct inode        *f_inode;   // cached value 
+    const struct file_operations    *f_op;
+
+    spinlock_t      f_lock;
+    enum rw_hint        f_write_hint;
+    atomic_long_t       f_count;
+    unsigned int        f_flags;
+    fmode_t         f_mode;
+    struct mutex        f_pos_lock;
+    loff_t          f_pos;
+    struct fown_struct  f_owner;
+    const struct cred   *f_cred;
+    struct file_ra_state    f_ra;
+
+    u64         f_version;
+
+    // needed for tty driver, and maybe others 
+    void            *private_data; //这里 这里！！
+
+    struct address_space    *f_mapping;
+    errseq_t        f_wb_err;
+} __randomize_layout
 */
 
 /* loff_t 类型定义： long long 整形。
@@ -309,5 +353,5 @@ typedef long long __kernel_loff_t;
  * @x: first value
  * @y: second value
 
-#define min_t(type, x, y)	__careful_cmp((type)(x), (type)(y), <)
+#define min_t(type, x, y)   __careful_cmp((type)(x), (type)(y), <)
 */
