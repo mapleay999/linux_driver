@@ -127,7 +127,7 @@ loff_t chrdev_llseek (struct file *filp, loff_t offset, int whence){
                 filp->f_pos += offset;
                 break;
 
-        case SEEK_END: //相对偏移：从当文件末尾处偏移 offset 个位置。此处没吃透，需要后续仔细研究！！！
+        case SEEK_END: //相对偏移：从当文件末尾处偏移 offset 个位置。
                 filp->f_pos = i_size_read(file_inode(filp)) + offset; 
                 break;
 
