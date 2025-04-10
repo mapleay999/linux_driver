@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
  * ./testapp.out 的使用方式：
  * ./testapp.out -w "MAPLE-HUANGHELOU-20250409-LMJ-TestBeef!" (39bytes个字符组成的字符串)
  * ./testapp.out -r
- * ./testapp.out -w "AMPLE-TestBeef-2005" (19bytes个字符组成的字符串)
+ * ./testapp.out -w "MAPLE-TestBeef-2005" (19bytes个字符组成的字符串)
  * ./testapp.out -r
  * ./testapp.out -u "20"
  * ./testapp.out -r
