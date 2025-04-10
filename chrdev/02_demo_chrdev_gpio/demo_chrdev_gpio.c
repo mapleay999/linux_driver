@@ -7,81 +7,12 @@
 #include <linux/device.h>
 #include <linux/uaccess.h>  /* 用户空间数据拷贝 */
 #include <linux/slab.h>     /* 内核内存分配    */
-#include <linux/ioctl.h>    /* ioctl相关定义   */
-#include <linux/string.h>   /* 内核的 strlen() */
 
-
-#define DEVICE_NAME "mapleay-chrdev-device"
-#define CLASS_NAME  "mapleay-chrdev-class"
-#define MINOR_BASE  0     /* 次设备号起始编号为 0 */
-#define MINOR_COUNT 1     /* 次设备号的数量为 1   */
-#define BUF_SIZE    1024  /* 内核缓冲区大小       */
-
-
-/* 应用层代码也需要同样的一份与内核ioctl一模一样的预定义信息，如下：开始 */
-/* 
-  20250410 新增：ioctl命令定义 ioctl专用。
-  这份代码，下面5行预定义代码，常规操作时独立出一个头文件，供内核和应用层共享。
-*/
-#define CHRDEV_IOC_MAGIC   'k'
-#define CLEAR_BUF              _IO(CHRDEV_IOC_MAGIC, 0)
-#define GET_BUF_SIZE           _IOR(CHRDEV_IOC_MAGIC, 1, int)
-#define GET_DATA_LEN           _IOR(CHRDEV_IOC_MAGIC, 2, int)
-#define MAPLEAY_UPDATE_DAT_LEN _IOWR(CHRDEV_IOC_MAGIC, 3, int)
-#define CHRDEV_IOC_MAXNR    3
-/*
-1. 内核中要使用 ioctl ，必须自定义 ioctl 专属的 cmd 相关信息，且与应用层共享此信息：
-
-1.1 #define CHRDEV_IOC_MAGIC  'k'
-    作用：定义设备驱动的唯一标识符（Magic Number）。
-    'k' 是一个 ASCII 字符（内核中存储为字节值 0x6B）。
-    魔数用于区分不同驱动模块的 ioctl 命令，防止命令冲突。
-    必须确保该字符未被其他驱动占用（需查阅内核文档 Documentation/ioctl/ioctl-number.rst）。
-
-1.2 #define CLEAR_BUF  _IO(CHRDEV_IOC_MAGIC, 0)
-    作用：定义一个不涉及数据传输的简单命令。
-    通过 _IO() 宏生成命令码。
-    参数：
-        CHRDEV_IOC_MAGIC：魔数；
-        0：命令序号（从 0 开始递增）。
-    用途：通知驱动清空缓冲区，无需传递参数。
-
-1.3 #define GET_BUF_SIZE      _IOR(CHRDEV_IOC_MAGIC, 1, int)
-    #define GET_DATA_LEN      _IOR(CHRDEV_IOC_MAGIC, 2, int)
-    作用：定义需要从内核读取数据的命令。
-    通过 _IOR() 宏生成命令码，表示 用户空间从内核读取数据。
-    参数：
-        1 或 2：命令序号。
-        int：用户空间接收数据的数据类型。
-    用途：
-        GET_BUF_SIZE：获取缓冲区总容量。
-        GET_DATA_LEN：获取当前有效数据长度。
-
-1.4 #define CHRDEV_IOC_MAXNR  2
-    作用：定义当前驱动支持的最大命令序号。
-    细节：
-        序号范围：0 ≤ 命令序号 ≤ CHRDEV_IOC_MAXNR。
-        潜在问题：当前最大序号是 2，但通常 _MAXNR 应设为最大序号 +1（此处应为 3），
-                否则可能在校验时拒绝合法命令。
-
-1.5 命令码构造原理
-Linux 内核通过 32 位的命令码（cmd）标识 ioctl 操作，其结构如下：
-位域                  说明                  长度
-方向              数据传输方向               2 bits
-类型              魔数字节（ASCII 字符）      8 bits
-序号              命令唯一标识               8 bits
-数据大小           用户数据大小               14 bits
-宏展开示例：
-_IOR('k', 1, int) 会生成：
- 方向 = _IOC_READ（用户读）
- 类型 = 'k'
- 序号 = 1
- 数据大小 = sizeof(int)
-魔数冲突风险：
-必须确保 'k' 未被其他驱动使用，否则可能导致命令被错误处理。
-验证方法：检查内核源码或运行 cat /proc/devices 查看已注册字符设备。
-*/
-/* 应用层代码也需要同样的一份与内核ioctl一模一样的预定义信息，如上：结束 */
+#define DEVICE_NAME "mapleay-chrdev-device-led"
+#define CLASS_NAME  "mapleay-chrdev-class-led"
+#define MINOR_BASE  0     /* 次设备号起始编号为 0   */
+#define MINOR_COUNT 1     /* 次设备号的数量为 1     */
+#define BUF_SIZE    1024  /* 内核字符设备缓冲区大小  */
 
 static dev_t dev_num;         /* 设备号    */
 static struct cdev   chrdev;  /* 字符设备体 */
@@ -98,11 +29,7 @@ static struct chrdev_data_t dev_data;
 
 /* 定义 chrdev 的 file_operations 接口函数 */
 static int chrdev_open(struct inode *inode, struct file *filp) {
-    // 关联私有数据：内核进程关联字符设备驱动.
-    // filp->private_data 在 struct file 中定义的就是一个 void 类型的指针。
-    // 因此 ((struct file*) filp)->private_data 这个 void 类型的指针，可以灵活指向甲方自定义的私有数据空间。
-    // 内核的字符设备驱动模块将其自定义数据传递给其匹配的进程，就是通过 filp->private_data 挂接。
-    filp->private_data = &dev_data;  
+    filp->private_data = &dev_data;
     printk(KERN_INFO "内核 chrdev_open：设备已被 pid %d 打开！\n", current->pid);
     return 0;
 }
@@ -200,56 +127,6 @@ static ssize_t chrdev_write(struct file *filp, const char __user *buf, size_t le
     return to_write;
 }
 
-/*
-提醒：copy_from_user 与 copy_from_user 用于在内核中，实现：
-    内核空间向用户空间写入数据字节；（写：用户视角，入：内核视角）
-    内核空间从用户空间读出数据字节；（读：用户视角，出：内核视角）
-    字节数据：表示这俩函数是二进制级别的操作，是二进制安全的！
-    本演示程序，主要是操作 (chrdev_data_t *)data->data_len 的。
-*/
-static long chrdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg) {
-    struct chrdev_data_t *data = filp->private_data;
-    int ret = 0;
-    int val = 0;
-
-    /* 验证命令有效性 */
-    if (_IOC_TYPE(cmd) != CHRDEV_IOC_MAGIC) return -ENOTTY;
-    if (_IOC_NR(cmd) > CHRDEV_IOC_MAXNR) return -ENOTTY;
-
-    switch (cmd) {
-        case CLEAR_BUF:  /* 清除缓冲区 */
-            data->data_len = 0;
-            memset(data->buffer, 0, data->buf_size);
-            printk(KERN_INFO "ioctl: 缓冲区已清空\n");
-            break;
-
-        case GET_BUF_SIZE:  /* 获取缓冲区大小 */
-            val = data->buf_size;
-            if (copy_to_user((int __user *)arg, &val, sizeof(val)))
-                return -EFAULT;
-            break;
-
-        case GET_DATA_LEN:  /* 获取当前数据长度 */
-            val = data->data_len;
-            if (copy_to_user((int __user *)arg, &val, sizeof(val)))
-                return -EFAULT;
-            break;
-
-        case MAPLEAY_UPDATE_DAT_LEN:  /* 自定义：更新有效数据长度 */
-            if (copy_from_user(&val, (int __user *)arg, sizeof(arg)))
-                return -EFAULT;
-            data->data_len = val;  //设置有效数据长度
-            val = 12345678;        //特殊数字 仅用来测试 _IORW 的返回方向。
-            if (copy_to_user((int __user *)arg, &val, sizeof(val)))
-                return -EFAULT;
-            break;
-
-        default:
-            return -ENOTTY;
-    }
-    return ret;
-}
-
 static int chrdev_release(struct inode *inode, struct file *file) {
     printk(KERN_INFO "内核 chrdev_release：设备已被 pid 为 %d 的进程释放！\n", current->pid);
     return 0;
@@ -257,13 +134,12 @@ static int chrdev_release(struct inode *inode, struct file *file) {
 
 /* 定义 chrdev 的 file_operations 结构体变量 */
 static struct file_operations fops = {
-    .owner          = THIS_MODULE,
-    .llseek         = chrdev_llseek,
-    .open           = chrdev_open,
-    .read           = chrdev_read,
-    .write          = chrdev_write,
-    .unlocked_ioctl = chrdev_ioctl,
-    .release        = chrdev_release,
+    .owner   = THIS_MODULE,
+    .llseek  = chrdev_llseek,
+    .open    = chrdev_open,
+    .read    = chrdev_read,
+    .write   = chrdev_write,
+    .release = chrdev_release,
 };
 
 static int __init chrdev_init(void) {
@@ -333,7 +209,6 @@ fail_cdev:
     kfree(dev_data.buffer);
 fail_buffer:
     unregister_chrdev_region(dev_num, MINOR_COUNT);
-
     return err;
 }
 
