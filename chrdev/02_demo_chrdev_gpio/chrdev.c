@@ -9,37 +9,12 @@
 #include <linux/slab.h>     /* 内核内存分配    */
 #include <linux/ioctl.h>    /* ioctl相关定义   */
 #include <linux/string.h>   /* 内核的 strlen() */
+#include "chrdev_ioctl.h"
+#include "chrdev.h"         /* 自定义内核字符设备驱动框架信息 */
+#include "stm32mp157d.h"    /* 自定义内核控制的硬件相关信息 */
 
 
-#define CHRDEV_IOC_MAGIC   'k'
-#define CLEAR_BUF              _IO(CHRDEV_IOC_MAGIC, 0)
-#define GET_BUF_SIZE           _IOR(CHRDEV_IOC_MAGIC, 1, int)
-#define GET_DATA_LEN           _IOR(CHRDEV_IOC_MAGIC, 2, int)
-#define MAPLEAY_UPDATE_DAT_LEN _IOWR(CHRDEV_IOC_MAGIC, 3, int)
-#define CHRDEV_IOC_MAXNR    3
-
-#define DEVICE_NAME "mapleay-chrdev-device"
-#define CLASS_NAME  "mapleay-chrdev-class"
-#define MINOR_BASE  0     /* 次设备号起始编号为 0 */
-#define MINOR_COUNT 1     /* 次设备号的数量为 1   */
-#define BUF_SIZE    1024  /* 内核缓冲区大小       */
-
-/* 字符设备的自定义私有数据结构 */
-struct cdev_private_data_t {
-    char  *buffer;         /* 内核缓冲区 */
-    size_t buf_size;       /* 缓冲区大小 */
-    size_t data_len;       /* 当前数据长度 */
-};
-
-typedef struct chrdev_object {
-    struct cdev   dev;
-    struct class  *dev_class;
-    struct device *dev_device;
-    struct cdev_private_data_t dev_data;
-    dev_t  dev_num;
-}chrdev_t;
-
-static chrdev_t chrdev; 
+static chrdev_t chrdev;
 
 static int dev_open(struct inode *inode, struct file *filp) {
     filp->private_data = &chrdev.dev_data;
@@ -48,21 +23,32 @@ static int dev_open(struct inode *inode, struct file *filp) {
 }
 
 /* llseek 函数跟字符设备驱动的数据，可以无任何直接关联，只通过 offset 间接关联。 */
+/* loff_t 类型是 signed long long 有符号数值 */
 loff_t dev_llseek (struct file *filp, loff_t offset, int whence){
-    
-    switch (whence) {
-        case SEEK_SET: //从文件头部偏移 offset 个位置。
-                if (offset < 0) return -EINVAL; /* 禁止负偏移 */
-                filp->f_pos = offset;
-                break; /* 设定具体的偏移位置 */
 
-        case SEEK_CUR://从当前位置偏移 offset 个位置。
-                if (offset + filp->f_pos < 0) return -EINVAL; /* 禁止越界偏移 */
-                filp->f_pos += offset;
+    struct cdev_private_data_t *data = filp->private_data;
+    loff_t new_pos = 0;
+    /* 对进程的 f_ops 进行校验，防止意外 */
+    if ((filp->f_pos < 0) || (filp->f_pos > data->buf_size)) {
+        return -EINVAL;
+    }
+
+    switch (whence) {
+        case SEEK_SET:
+                if ((offset < 0) || (offset > data->buf_size)) return -EINVAL;
+                filp->f_pos = offset;
                 break;
 
-        case SEEK_END: //从文件末尾偏移 offset 个位置。
-                filp->f_pos = i_size_read(file_inode(filp)) + offset; 
+        case SEEK_CUR:
+                new_pos = filp->f_pos + offset;
+                if ((new_pos < 0) || (new_pos > data->buf_size)) return -EINVAL;
+                filp->f_pos = new_pos;
+                break;
+
+        case SEEK_END:
+                new_pos = data->buf_size + offset;
+                if ((new_pos < 0) || (new_pos > data->buf_size)) return -EINVAL;
+                filp->f_pos = new_pos;
                 break;
 
         default: return -EINVAL; /* 禁止隐式偏移 */
@@ -71,20 +57,20 @@ loff_t dev_llseek (struct file *filp, loff_t offset, int whence){
 }
 
 static ssize_t dev_read(struct file *filp, char __user *buf, size_t len, loff_t *off) {
-    
-    struct cdev_private_data_t *data = filp->private_data;  
-    size_t to_read = min_t(size_t, len, data->data_len - *off); 
-    
+
+    struct cdev_private_data_t *data = filp->private_data;
+    size_t to_read = min_t(size_t, len, data->data_len - *off); //min截短
+
     if (to_read == 0) {
         printk(KERN_INFO "内核 chrdev_read：内核数据读出完毕！\n");
         return 0;
     }
-    
+
     if (copy_to_user(buf, data->buffer + *off, to_read)) {
         printk(KERN_ERR "内核 chrdev_read：复制数据到用户空间操作失败！\n");
         return -EFAULT;
     }
-    
+
     *off += to_read;
     printk(KERN_INFO "内核 chrdev_read：已从内核读出 %zu 字节的数据，当下偏移位于 %lld处。\n", to_read, *off);
     return to_read;
@@ -103,7 +89,15 @@ static ssize_t dev_write(struct file *filp, const char __user *buf, size_t len, 
         printk(KERN_ERR "内核 chrdev_write：从用户空间复制数据到内核空间的操作失败！\n");
         return -EFAULT;
     }
-    
+
+    /* 新增：LED灯控制部分 */
+    if(data->buffer[*off] == LEDON) {
+        led_switch(LEDON);  /* 打开 LED 灯  */
+    }
+    else if(data->buffer[*off] == LEDOFF) { 
+        led_switch(LEDOFF);  /* 关闭 LED 灯  */
+    }
+
     *off += to_write;
     data->data_len = max_t(size_t, data->data_len, *off); //max，二进制安全，取大。OK。
     printk(KERN_INFO "内核 chrdev_write：已写入内核： %zu 字节的数据，当下偏移位位于 %lld 处。\n", to_write, *off);
@@ -171,12 +165,15 @@ static struct file_operations fops = {
 static int __init chrdev_init(void) {
     
     int err = 0;
-    
+    /* 0. 初始化 stm32mp157d 的 gpio 硬件部分 */
+    led_init();
+
     /* 1. 申请主设备号：动态申请方式（推荐方式） */
     if (alloc_chrdev_region(&chrdev.dev_num, MINOR_BASE, MINOR_COUNT, DEVICE_NAME))
     {
         printk("chrdev_init: 分配 chrdev 的字符设备号操作失败！！！\n");
-        return -ENODEV;
+        err = -ENODEV;
+        goto fail_devnum;
     }
     printk("chrdev_init: 分配主设备号： %d 次设备号： %d 成功。\n", MAJOR(chrdev.dev_num), MINOR(chrdev.dev_num));
     
@@ -228,11 +225,16 @@ fail_cdev:
     kfree(chrdev.dev_data.buffer);
 fail_buffer:
     unregister_chrdev_region(chrdev.dev_num, MINOR_COUNT);
+fail_devnum:
+    led_deinit();
 
     return err;
 }
 
 static void __exit chrdev_exit(void) {
+    
+    /* 0. 注销硬件资源：解除内核中注册的引脚映射 */
+    led_deinit();
     
     /* 1. 销毁设备节点和设备类 */
     device_destroy(chrdev.dev_class, chrdev.dev_num);
@@ -262,13 +264,13 @@ MODULE_DESCRIPTION("A DEMO character device driver by Mapleay.");
 3. 在C或C++中，访问结构体（或类）成员的运算符选择取决于变量类型：
 
 3.1 使用箭头运算符 -> 的情况  
-   当变量是指针，且指向结构体/类对象时，用 `->` 访问其成员。  
+   当变量是指针，且指向结构体/类对象时，用 -> 访问其成员。  
 
 3.2 使用点运算符 . 的情况  
-   当变量是结构体/类的**实例对象**（非指针）时，用 `.` 访问成员：  
+   当变量是结构体/类的实例对象（非指针）时，用 . 访问成员：  
 
 3.3 特殊情况：指针解引用后  
-   如果显式解引用指针（如 *ptr），则需用 . ，但更推荐直接写 `->`：  
+   如果显式解引用指针（如 *ptr），则需用 . ，但更推荐直接写 ->：  
    (*ptr).age = 20;  // 等效于 ptr->age
 
 总结

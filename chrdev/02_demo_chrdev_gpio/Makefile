@@ -1,13 +1,22 @@
 # 临时禁用模块签名验证功能
-CONFIG_MODULE_SIG=n
+CONFIG_MODULE_SIG = n
 
 # KDIR 是开发板所使用的源代码的 Linux 内核源码的根目录
 KDIR := /home/ericedward/linux_space/linux_kernel/my_linux_kernel/linux-stm32mp-5.4.31-r0/linux-5.4.31/
 CURRENT_PATH := $(shell pwd)
 TARGET_PATH  := /home/ericedward/linux_space/tools/nfs/rootfs/home/maple/linux_driver/chrdev/01_chrdev/
+WORKING_PATH := /home/ericedward/linux_space/linux_driver/chrdev/01_chrdev
 
 # 指定生成模块目标
 obj-m += demo_chrdev.o
+# 内核模块的构建系统（Kbuild）要求通过 `<module_name>-objs` 指定模块的依赖对象文件，而非直接赋值给模块名。
+# 错误写法：demo_chrdev := chrdev.o stm32mp157.o 
+demo_chrdev-objs := chrdev.o stm32mp157.o # 定义demo_chrdev目标的依赖，注意：是 -objs 别少s！
+
+# 在模块的 Makefile 中，使用 ccflags-y 或 CFLAGS_MODULE 指定自定义头文件路径
+# 添加自定义头文件路径（相对于 Makefile 的路径）
+#$(info CURRENT_PATH is $(CURRENT_PATH)) # 确保 CURRENT_PATH 正确展开（调试用）
+ccflags-y += -I$(WORKING_PATH)/include #Kbuild语法限制：-IPath，-I后直接加路径，无空格！！
 
 all:
 # modules 不是 Makefile 关键字，但在 Linux 内核驱动开发中常用作目标名称，用于编译内核模块（生成 .ko 文件）
@@ -19,6 +28,10 @@ clean:
 # clean不是关键字，但广泛用于伪目标声明，需通过 .PHONY: clean 声明为伪目标，避免与同名文件冲突。
 	$(MAKE) -C $(KDIR) M=$(CURRENT_PATH) clean # 正在删除 Linux 字符设备驱动的编译产出文件……
 	rm -f **.out **.a  # 正在删除应用程序的编译产出文件……
+
+testapp:testapp.c
+# "-I[path]"命令配置选项，指定自定义头文件路径。比如下面的：-I$(WORKING_PATH)/include
+	arm-none-linux-gnueabihf-gcc -I$(WORKING_PATH)/include $(WORKING_PATH)/testapp.c -o $(WORKING_PATH)/testapp.out
 
 deploy:
 # 将编译产出的 .ko 可执行文件，复制到STM32MP157d开发板对应的linux文件系统内的合适的路径下。
@@ -47,5 +60,3 @@ deploy:
 # linux 的 Kbuild系统（内核构建系统）强制要求使用$(MAKE)进行递归调用。
 # 普通应用程序同样可通过$(MAKE)实现递归构建。
 
-testapp:testapp.c
-	arm-none-linux-gnueabihf-gcc $(CURRENT_PATH)/testapp.c -o $(CURRENT_PATH)/testapp.out
