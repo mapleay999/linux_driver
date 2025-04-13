@@ -1320,11 +1320,687 @@ int main(int argc, char **argv) {
 
 
 
+## 问题9 应用程序循环监控从键盘输入的有限个数据
+
+在 C 语言中，直接使用 `fopen` 和 `fscanf` 监控键盘输入存在 **设计逻辑错误**，因为 `stdin`（标准输入流）默认已打开，无需 `fopen`。不过，可以通过以下方案实现 **基于标准输入流的输入监控与解析**，并解决潜在问题：
+
+---
+
+### **一、基础方案：`fscanf` 读取格式化输入**
+#### **代码示例**
+```c
+#include <stdio.h>
+
+int main() {
+    char cmd[64];  // 存储输入的命令
+
+    printf("输入指令 (start/stop/exit):\n");
+    while (1) {
+        printf(">> ");
+        fflush(stdout);  // 确保提示符立即显示
+
+        // 从 stdin 读取输入，最多读取 63 字符（避免溢出）
+        if (fscanf(stdin, "%63s", cmd) != 1) {
+            // 处理输入错误或 EOF (如用户按下 Ctrl+D)
+            clearerr(stdin);  // 清除错误标志
+            continue;
+        }
+
+        // 解析指令
+        if (strcmp(cmd, "start") == 0) {
+            printf("[系统] 服务已启动\n");
+        } else if (strcmp(cmd, "stop") == 0) {
+            printf("[系统] 服务已停止\n");
+        } else if (strcmp(cmd, "exit") == 0) {
+            printf("退出程序\n");
+            break;
+        } else {
+            printf("错误：未知指令 '%s'\n", cmd);
+        }
+    }
+
+    return 0;
+}
+```
+
+#### **局限性**
+1. **行缓冲问题**：输入需按 `Enter` 键提交，无法实时响应单字符输入。
+2. **格式限制**：`fscanf` 按格式匹配，若输入包含空格会被截断。
+
+---
+
+### **二、改进方案：`fgets` + `sscanf`**
+更安全地读取整行输入，再解析内容：
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char input[64];
+    const char *exit_cmd = "exit";
+
+    while (1) {
+        printf(">> ");
+        fflush(stdout);
+
+        if (fgets(input, sizeof(input), stdin) == NULL) {
+            break;  // 处理 EOF (如 Ctrl+D)
+        }
+
+        // 去除换行符
+        input[strcspn(input, "\n")] = '\0';
+
+        // 解析指令
+        if (strcmp(input, exit_cmd) == 0) {
+            printf("退出程序\n");
+            break;
+        } else {
+            printf("收到指令: %s\n", input);
+        }
+    }
+
+    return 0;
+}
+```
+
+#### **优势**
+- **输入安全**：`fgets` 限制缓冲区大小，避免溢出。
+- **完整行处理**：支持含空格的输入（如 `set value 10`）。
+
+这个方案验证过，能很好满足我的需求：应用程序循环检测来自键盘的输入，并解析，将解析结果输入应用程序unix c的 read/write/open 等函数去控制底层的字符设备驱动程序。2025年4月12日10:57:26
+
+---
+
+### **三、高级场景：实时输入监控**
+若需 **无需回车键的实时输入监听**，需结合 **终端原始模式**（依赖 `termios` 库）：
+
+```c
+#include <stdio.h>
+#include <termios.h>
+#include <unistd.h>
+#include <string.h>
+
+// 设置终端为非规范模式
+void set_terminal_raw() {
+    struct termios term;
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag &= ~(ICANON | ECHO);  // 禁用行缓冲和回显
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+int main() {
+    set_terminal_raw();
+    char cmd[64] = {0};
+    int cursor = 0;
+
+    printf("输入指令 (按 Enter 提交):\n>> ");
+    fflush(stdout);
+
+    while (1) {
+        char c;
+        if (read(STDIN_FILENO, &c, 1) > 0) {  // 实时读取字符
+            if (c == '\n') {                  // 提交指令
+                printf("\n执行指令: %s\n>> ", cmd);
+                if (strcmp(cmd, "exit") == 0) break;
+                memset(cmd, 0, sizeof(cmd));
+                cursor = 0;
+            } else if (c == 127 || c == 8) {   // 处理退格
+                if (cursor > 0) {
+                    cmd[--cursor] = '\0';
+                    printf("\b \b");
+                }
+            } else if (cursor < sizeof(cmd) - 1) {  // 存储字符
+                cmd[cursor++] = c;
+                putchar(c);
+            }
+            fflush(stdout);
+        }
+    }
+
+    return 0;
+}
+```
+
+---
+
+### **四、关键问题解答**
+#### **1. 为什么 `fopen` 不适合监控键盘输入？**
+- `stdin` 已默认关联到键盘输入，直接使用 `fscanf(stdin, ...)` 或 `fgets` 即可，无需额外打开。
+- 若强制用 `fopen("/dev/tty", "r")` 打开终端设备，需额外处理权限和平台兼容性问题。
+
+#### **2. `fscanf` 的输入缓冲问题**
+- **行缓冲**：用户必须按 `Enter` 键提交输入。
+- **残留数据**：若输入内容超过格式匹配范围（如 `fscanf("%d", &num)` 输入字母），需调用 `while (getchar() != '\n');` 清空缓冲区。
+
+#### **3. 安全性建议**
+- 始终限制输入长度（如 `%63s` 或 `fgets(..., sizeof(buf), stdin)`）。
+- 验证输入内容后再执行敏感操作（如系统命令、文件删除）。
+
+---
+
+### **五、总结**
+- **简单场景**：用 `fgets` + `strcmp` 解析预定义指令。
+- **格式化输入**：用 `fscanf` 读取数值、字符串等结构化数据。
+- **实时监听**：通过 `termios` 修改终端模式实现无缓冲输入。
+
+根据需求选择合适方案，并始终优先考虑输入安全性和鲁棒性。
 
 
 
+## 实验结果
 
 
 
+![image-20250413171354425](./assets/image-20250413171354425.png)
 
+```c
+/* UTF-8编码 Unix(LF) */
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/kernel.h>
+#include <linux/cdev.h>
+#include <linux/fs.h>
+#include <linux/device.h>
+#include <linux/uaccess.h>  /* 用户空间数据拷贝 */
+#include <linux/slab.h>     /* 内核内存分配    */
+#include <linux/ioctl.h>    /* ioctl相关定义   */
+#include <linux/string.h>   /* 内核的 strlen() */
+#include "chrdev_ioctl.h"
+#include "chrdev.h"         /* 自定义内核字符设备驱动框架信息 */
+#include "stm32mp157d.h"    /* 自定义内核控制的硬件相关信息 */
+
+
+static chrdev_t chrdev;
+
+static int dev_open(struct inode *inode, struct file *filp) {
+    filp->private_data = &chrdev.dev_data;
+    printk(KERN_INFO "内核 chrdev_open：设备已被 pid %d 打开！\n", current->pid);
+    return 0;
+}
+
+/* llseek 函数跟字符设备驱动的数据，可以无任何直接关联，只通过 offset 间接关联。 */
+/* loff_t 类型是 signed long long 有符号数值 */
+loff_t dev_llseek (struct file *filp, loff_t offset, int whence){
+
+    struct cdev_private_data_t *data = filp->private_data;
+    loff_t new_pos = 0;
+    /* 对进程的 f_ops 进行校验，防止意外 */
+    if ((filp->f_pos < 0) || (filp->f_pos > data->buf_size)) {
+        return -EINVAL;
+    }
+
+    switch (whence) {
+        case SEEK_SET:
+                if ((offset < 0) || (offset > data->buf_size)) 
+                {
+                    printk(KERN_INFO "内核 dev_llseek：文件偏移失败！！\n");
+                    return -EINVAL;
+                }
+                filp->f_pos = offset;
+                break;
+
+        case SEEK_CUR:
+                new_pos = filp->f_pos + offset;
+                if ((new_pos < 0) || (new_pos > data->buf_size)) return -EINVAL;
+                filp->f_pos = new_pos;
+                break;
+
+        case SEEK_END:
+                new_pos = data->buf_size + offset;
+                if ((new_pos < 0) || (new_pos > data->buf_size)) return -EINVAL;
+                filp->f_pos = new_pos;
+                break;
+
+        default: return -EINVAL; /* 禁止隐式偏移 */
+    }
+    return filp->f_pos;
+}
+
+static ssize_t dev_read(struct file *filp, char __user *buf, size_t len, loff_t *off) {
+
+    struct cdev_private_data_t *data = filp->private_data;
+    size_t to_read = min_t(size_t, len, data->data_len - *off); //min截短
+
+    if (to_read == 0) {
+        printk(KERN_INFO "内核 chrdev_read：内核数据读出完毕！\n");
+        return 0;
+    }
+
+    if (copy_to_user(buf, data->buffer + *off, to_read)) {
+        printk(KERN_ERR "内核 chrdev_read：复制数据到用户空间操作失败！\n");
+        return -EFAULT;
+    }
+
+    *off += to_read;
+    printk(KERN_INFO "内核 chrdev_read：已从内核读出 %zu 字节的数据，当下偏移位于 %lld处。\n", to_read, *off);
+    return to_read;
+}
+
+static ssize_t dev_write(struct file *filp, const char __user *buf, size_t len, loff_t *off) {
+    struct cdev_private_data_t *data = filp->private_data;
+    size_t to_write = min_t(size_t, len, data->buf_size - *off); //min，二进制安全，取小。OK。
+    
+    if (to_write == 0) {
+        printk(KERN_INFO "内核 chrdev_write：缓冲区已满，无法继续写入！\n");
+        return -ENOSPC;
+    }
+    
+    if (copy_from_user(data->buffer + *off, buf, to_write)) {
+        printk(KERN_ERR "内核 chrdev_write：从用户空间复制数据到内核空间的操作失败！\n");
+        return -EFAULT;
+    }
+
+    /* 硬件LED灯控制部分: 提示，注意 data->buffer[0] 表示缓冲区第0位。而不是 (*off) */
+    if(data->buffer[0] == LEDON) {
+        led_switch(LEDON);  /* 打开 LED 灯  */
+    }
+    else if(data->buffer[0] == LEDOFF) { 
+        led_switch(LEDOFF);  /* 关闭 LED 灯  */
+    }
+
+    *off += to_write;
+    data->data_len = max_t(size_t, data->data_len, *off); //max，二进制安全，取大。OK。
+    printk(KERN_INFO "内核 chrdev_write：已写入内核： %zu 字节的数据，当下偏移位位于 %lld 处。\n", to_write, *off);
+    return to_write;
+}
+
+static long dev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg) {
+    struct cdev_private_data_t *data = filp->private_data;
+    int ret = 0;
+    int val = 0;
+
+    /* 验证命令有效性 */
+    if (_IOC_TYPE(cmd) != CHRDEV_IOC_MAGIC) return -ENOTTY;
+    if (_IOC_NR(cmd) > CHRDEV_IOC_MAXNR) return -ENOTTY;
+
+    switch (cmd) {
+        case CLEAR_BUF:  /* 清除缓冲区 */
+            data->data_len = 0;
+            memset(data->buffer, 0, data->buf_size);
+            printk(KERN_INFO "ioctl: 缓冲区已清空\n");
+            break;
+
+        case GET_BUF_SIZE:  /* 获取缓冲区大小 */
+            val = data->buf_size;
+            if (copy_to_user((int __user *)arg, &val, sizeof(val)))
+                return -EFAULT;
+            break;
+
+        case GET_DATA_LEN:  /* 获取当前数据长度 */
+            val = data->data_len;
+            if (copy_to_user((int __user *)arg, &val, sizeof(val)))
+                return -EFAULT;
+            break;
+
+        case MAPLEAY_UPDATE_DAT_LEN:  /* 自定义：更新有效数据长度 */
+            if (copy_from_user(&val, (int __user *)arg, sizeof(arg)))
+                return -EFAULT;
+            data->data_len = val;  //设置有效数据长度
+            val = 12345678;        //特殊数字 仅用来测试 _IORW 的返回方向。
+            if (copy_to_user((int __user *)arg, &val, sizeof(val)))
+                return -EFAULT;
+            break;
+
+        default:
+            return -ENOTTY;
+    }
+    return ret;
+}
+
+static int dev_release(struct inode *inode, struct file *file) {
+    printk(KERN_INFO "内核 chrdev_release：设备已被 pid 为 %d 的进程释放！\n", current->pid);
+    return 0;
+}
+
+static struct file_operations fops = {
+    .owner          = THIS_MODULE,
+    .llseek         = dev_llseek,
+    .open           = dev_open,
+    .read           = dev_read,
+    .write          = dev_write,
+    .unlocked_ioctl = dev_ioctl,
+    .release        = dev_release,
+};
+
+static int __init chrdev_init(void) {
+    
+    int err = 0;
+    /* 0. 初始化 stm32mp157d 的 gpio 硬件部分 */
+    led_init();
+
+    /* 1. 申请主设备号：动态申请方式（推荐方式） */
+    if (alloc_chrdev_region(&chrdev.dev_num, MINOR_BASE, MINOR_COUNT, DEVICE_NAME))
+    {
+        printk("chrdev_init: 分配 chrdev 的字符设备号操作失败！！！\n");
+        err = -ENODEV;
+        goto fail_devnum;
+    }
+    printk("chrdev_init: 分配主设备号： %d 次设备号： %d 成功。\n", MAJOR(chrdev.dev_num), MINOR(chrdev.dev_num));
+    
+    /* 2. 初始化缓冲区 */
+    chrdev.dev_data.buffer = kmalloc(BUF_SIZE, GFP_KERNEL);
+    if (!chrdev.dev_data.buffer) {
+        err = -ENOMEM;
+        goto fail_buffer;
+    }
+    chrdev.dev_data.buf_size = BUF_SIZE;
+    chrdev.dev_data.data_len = 0;
+    
+    /* 3. 初始化 cdev 结构体 */
+    cdev_init(&chrdev.dev, &fops);
+    
+    /* 4. 注册 cdev 结构体到 Linux 内核 */
+    if (cdev_add(&chrdev.dev, chrdev.dev_num, MINOR_COUNT) < 0)
+    {
+        printk("chrdev_init: 添加 chrdev 字符设备失败！！！\n");
+        goto fail_cdev;
+    }
+    
+    /* 5. 创建设备类 */
+    chrdev.dev_class = class_create(THIS_MODULE, CLASS_NAME);
+    if (IS_ERR(chrdev.dev_class))
+    {
+        err = PTR_ERR(chrdev.dev_class);
+        printk(KERN_ERR"创建设备类失败！错误代码：%d\n", err);
+        goto fail_class;
+    }
+    
+    /* 6. 创建设备节点 */
+    chrdev.dev_device = device_create(chrdev.dev_class, NULL, chrdev.dev_num, NULL, DEVICE_NAME);
+    if (IS_ERR(chrdev.dev_device))
+    {
+        err = PTR_ERR(chrdev.dev_device);
+        printk(KERN_ERR"创建设备节点失败！错误代码：%d\n", err);
+        goto fail_device;
+    }
+    
+    printk(KERN_INFO "chrdev_init:Hello Kernel! 模块已加载！\r\n"); 
+    return 0;
+
+fail_device:
+    class_destroy(chrdev.dev_class);
+fail_class:
+    cdev_del(&chrdev.dev);
+fail_cdev:
+    kfree(chrdev.dev_data.buffer);
+fail_buffer:
+    unregister_chrdev_region(chrdev.dev_num, MINOR_COUNT);
+fail_devnum:
+    led_deinit();
+
+    return err;
+}
+
+static void __exit chrdev_exit(void) {
+    
+    /* 0. 注销硬件资源：解除内核中注册的引脚映射 */
+    led_deinit();
+    
+    /* 1. 销毁设备节点和设备类 */
+    device_destroy(chrdev.dev_class, chrdev.dev_num);
+    class_destroy(chrdev.dev_class);
+    
+    /* 2. 注销cdev */
+    cdev_del(&chrdev.dev);
+    
+    /* 3. 释放设备号 */
+    unregister_chrdev_region(chrdev.dev_num, MINOR_COUNT);
+    
+    /* 4. 释放缓冲区 */
+    kfree(chrdev.dev_data.buffer);
+    
+    printk(KERN_INFO "chrdev_exit:Goodbye Kernel! 模块已卸载！\r\n");
+}
+
+module_init(chrdev_init);
+module_exit(chrdev_exit);
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Mapleay");
+MODULE_DESCRIPTION("A DEMO character device driver by Mapleay.");
+
+/*
+1. 基于 01_demo_chrdev 文件夹里的 demo_chrdev 基本版本，适配 gpio 版本。
+2. 以面向对象的思想，整理好数据结构，否则特别散乱！
+3. 在C或C++中，访问结构体（或类）成员的运算符选择取决于变量类型：
+
+3.1 使用箭头运算符 -> 的情况  
+   当变量是指针，且指向结构体/类对象时，用 -> 访问其成员。  
+
+3.2 使用点运算符 . 的情况  
+   当变量是结构体/类的实例对象（非指针）时，用 . 访问成员：  
+
+3.3 特殊情况：指针解引用后  
+   如果显式解引用指针（如 *ptr），则需用 . ，但更推荐直接写 ->：  
+   (*ptr).age = 20;  // 等效于 ptr->age
+
+总结
+->：指针访问成员（ ptr->member ）。  
+. ：对象实例访问成员（ obj.member ）。  
+箭头运算符本质是“解引用 + 点操作”的简写，优先使用更简洁的 ->。
+*/
+```
+
+
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <stdlib.h>
+#include "chrdev_ioctl.h"
+
+#define DEVICE_FILE "/dev/mapleay-chrdev-device"
+#define BUFFER_SIZE   1024
+#define MAX_INPUT_LEN 128
+
+void print_usage() {
+    printf("\n支持的命令：\n");
+    printf("  w     <数据>       写入数据\n");
+    printf("  r                 读取数据\n");
+    printf("  l    <位置>       更新文件位置\n");
+    printf("  c                 清空缓冲区\n");
+    printf("  buf_size          获取缓冲区大小\n");
+    printf("  data_len          获取当前数据长度\n");
+    printf("  update_len <长度>  更新数据长度\n");
+    printf("  help              显示帮助信息\n");
+    printf("  exit              退出程序\n");
+    printf(">> ");
+    fflush(stdout);
+}
+
+int main() {
+    
+    char input[MAX_INPUT_LEN];
+    char cmd[MAX_INPUT_LEN];
+    char param[MAX_INPUT_LEN];
+    
+    int fd = open(DEVICE_FILE, O_RDWR, 0777);
+    if (fd < 0) {
+        perror("应用层：打开设备文件失败！");
+        return -1;
+    }
+
+    printf("字符设备操作程序已启动（输入 help 显示帮助）\n");
+    print_usage();
+
+    while (1) {
+        // 读取用户输入
+        if (fgets(input, MAX_INPUT_LEN, stdin) == NULL) {
+            break; // 处理 EOF (Ctrl+D)
+        }
+
+        // 去除换行符并分割命令参数
+        input[strcspn(input, "\n")] = '\0';
+        int num_args = sscanf(input, "%s %s", cmd, param);
+
+        // 处理空输入
+        if (strlen(input) == 0) {
+            print_usage();
+            continue;
+        }
+
+        // 解析命令
+        if (strcmp(cmd, "exit") == 0) {
+            printf("正在退出程序...\n");
+            break;
+        } else if (strcmp(cmd, "help") == 0) {
+            print_usage();
+        } else if (strcmp(cmd, "w") == 0) {                /* write */
+            if (num_args < 2) {
+                printf("错误：缺少写入数据，用法：w <数据>\n");
+                print_usage();
+                continue;
+            }
+            int data_in = atoi(param);
+			int cnt_to_write = 1;
+			/* 提醒：Unix C 的 write 系统调用函数，没有原生修改文件 offset 的能力。 */
+            ssize_t cnt_written = write(fd, &data_in, cnt_to_write);
+            if (cnt_written < 0) {
+                perror("写入内核失败！");
+            } else {
+                printf("成功写入 %zd 字节\n", cnt_written);
+            }
+        } else if (strcmp(cmd, "r") == 0) {                /* read */
+			/* 提醒：Unix C 的 read 系统调用函数，没有原生修改文件 offset 的能力。 */
+            char read_buf[BUFFER_SIZE];
+            if (num_args < 2) {
+                printf("错误：缺少读出数据位置，用法：w <数据>\n");
+                print_usage();
+                continue;
+            }
+            ssize_t cnt_read = read(fd, read_buf, BUFFER_SIZE);
+            if (cnt_read < 0) {
+                perror("读取内核失败！");
+            } else {
+                printf("读取到 %zd 字节：\n", cnt_read);
+                for (int i = 0; i < cnt_read; i++) {
+                    printf("%d", read_buf[i]);
+                }
+                printf("\n");
+            }
+        } else if (strcmp(cmd, "l") == 0) {                /* lseek */
+            if (num_args < 2) {
+                printf("错误：缺少位置参数，用法：lseek <位置>\n");
+                print_usage();
+                continue;
+            }
+            int data_pos = atoi(param);
+            if (lseek(fd, data_pos, SEEK_SET) < 0) {
+                perror("更新文件位置失败");
+            } else {
+                printf("当前文件位置更新为：%d\n", data_pos);
+            }
+        } else if (strcmp(cmd, "c") == 0) {
+            if (ioctl(fd, CLEAR_BUF) < 0) {
+                perror("清空缓冲区失败");
+            } else {
+                printf("缓冲区已清空\n");
+            }
+        } else if (strcmp(cmd, "buf_size") == 0) {
+            int size;
+            if (ioctl(fd, GET_BUF_SIZE, &size) < 0) {
+                perror("获取缓冲区大小失败");
+            } else {
+                printf("缓冲区总大小：%d 字节\n", size);
+            }
+        } else if (strcmp(cmd, "data_len") == 0) {
+            int len;
+            if (ioctl(fd, GET_DATA_LEN, &len) < 0) {
+                perror("获取数据长度失败");
+            } else {
+                printf("当前数据长度：%d 字节\n", len);
+            }
+        } else if (strcmp(cmd, "update_len") == 0) {
+            if (num_args < 2) {
+                printf("错误：缺少长度参数，用法：u <长度>\n");
+                print_usage();
+                continue;
+            }
+            int len = atoi(param);
+            if (ioctl(fd, MAPLEAY_UPDATE_DAT_LEN, &len) < 0) {
+                perror("更新数据长度失败");
+            } else {
+                printf("返回特俗内核底层的状态码：%d\n", len);
+            }
+        } else {
+            printf("未知命令：%s\n", cmd);
+            print_usage();
+        }
+
+        printf(">> ");
+        fflush(stdout);
+    }
+
+    close(fd);
+    return 0;
+}
+```
+
+```makefile
+# 临时禁用模块签名验证功能
+CONFIG_MODULE_SIG = n
+
+# KDIR 是开发板所使用的源代码的 Linux 内核源码的根目录
+KDIR := /home/ericedward/linux_space/linux_kernel/my_linux_kernel/linux-stm32mp-5.4.31-r0/linux-5.4.31/
+CURRENT_PATH := $(shell pwd)
+TARGET_PATH  := /home/ericedward/linux_space/tools/nfs/rootfs/home/maple/linux_driver/chrdev/01_chrdev/
+WORKING_PATH := /home/ericedward/linux_space/linux_driver/chrdev/01_chrdev
+
+# 指定生成模块目标
+obj-m += demo_chrdev.o
+# 内核模块的构建系统（Kbuild）要求通过 `<module_name>-objs` 指定模块的依赖对象文件，而非直接赋值给模块名。
+# 错误写法：demo_chrdev := chrdev.o stm32mp157.o 
+demo_chrdev-objs := chrdev.o stm32mp157.o # 定义demo_chrdev目标的依赖，注意：是 -objs 别少s！
+
+# 在模块的 Makefile 中，使用 ccflags-y 或 CFLAGS_MODULE 指定自定义头文件路径
+# 添加自定义头文件路径（相对于 Makefile 的路径）
+#$(info CURRENT_PATH is $(CURRENT_PATH)) # 确保 CURRENT_PATH 正确展开（调试用）
+ccflags-y += -I$(WORKING_PATH)/include #Kbuild语法限制：-IPath，-I后直接加路径，无空格！！
+
+all:
+# modules 不是 Makefile 关键字，但在 Linux 内核驱动开发中常用作目标名称，用于编译内核模块（生成 .ko 文件）
+# M 表示模块的源码目录。“make modules”命令根据M指定的路径，编码模块源码。
+	$(MAKE) -C $(KDIR) M=$(CURRENT_PATH) modules
+
+clean:
+# clean 是 Makefile 中常见的伪目标（phony target），用于清理编译生成的文件。
+# clean不是关键字，但广泛用于伪目标声明，需通过 .PHONY: clean 声明为伪目标，避免与同名文件冲突。
+	$(MAKE) -C $(KDIR) M=$(CURRENT_PATH) clean # 正在删除 Linux 字符设备驱动的编译产出文件……
+	rm -f **.out **.a  # 正在删除应用程序的编译产出文件……
+
+testapp:testapp.c
+# "-I[path]"命令配置选项，指定自定义头文件路径。比如下面的：-I$(WORKING_PATH)/include
+	arm-none-linux-gnueabihf-gcc -I$(WORKING_PATH)/include $(WORKING_PATH)/testapp.c -o $(WORKING_PATH)/testapp.out
+
+deploy:
+# 将编译产出的 .ko 可执行文件，复制到STM32MP157d开发板对应的linux文件系统内的合适的路径下。
+# scp 是安全拷贝命令，security cp，跨主机拷贝命令。不跨主机直接使用 cp 。
+# sudo scp $(CURRENT_PATH)/**.ko $(TARGET_PATH)
+	sudo cp $(CURRENT_PATH)/**.ko  $(TARGET_PATH)
+	sudo cp $(CURRENT_PATH)/**.out $(TARGET_PATH)
+
+# 在上面Makefile中没有直接调用编译器（如gcc或arm-none-linux-gnueabihf-gcc）编译源代码。
+# 这是因为 Linux 内核的模块构建系统（Kbuild系统）会间接执行编译过程。
+# 内核模块编译通过$(MAKE) -C $(KDIR) M=$(CURRENT_PATH) modules命令触发内核顶层的Kbuild系统，该系统会自动：
+# 1. 调用内核配置的交叉编译器（通过$(CC)变量）
+# 2. 应用内核的编译规则（如-Wall、-O2等标志）
+# 3. 处理模块签名、版本检查等内核特有流程
+
+# 下面这个执行OK：
+# ericedward@ubuntu:~/linux_space/linux_driver/chrdev/01_chrdev$ arm-none-linux-gnueabihf-gcc testapp.c -o testapp.out
+# 下面这个被注释的2行脚本执行失败：
+#testapp:testapp.c
+#	$(MAKE) $(CURRENT_PATH)/testapp.c -o $(CURRENT_PATH)/testapp.out
+# 默认情况下，make只处理Makefile中定义的目标。如果没有对应规则，它会认为"无事可做"
+# 默认规则缺失：Makefile中没有定义如何从.c文件生成.out文件的规则
+# 命令格式错误：你尝试的Makefile规则$(MAKE) $(CURRENT_PATH)/testapp.c -o ...是错误的语法。make不能直接编译源文件，除非明确指定规则
+
+# $(MAKE)是GNU Make的内置变量，展开为当前使用的make命令路径（如/usr/bin/make）。它本身不专属于Kbuild系统，而是Make工具的标准特性。
+# linux 的 Kbuild系统（内核构建系统）强制要求使用$(MAKE)进行递归调用。
+# 普通应用程序同样可通过$(MAKE)实现递归构建。
+
+
+```
 

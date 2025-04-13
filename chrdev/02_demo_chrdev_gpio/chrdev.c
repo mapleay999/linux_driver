@@ -35,7 +35,11 @@ loff_t dev_llseek (struct file *filp, loff_t offset, int whence){
 
     switch (whence) {
         case SEEK_SET:
-                if ((offset < 0) || (offset > data->buf_size)) return -EINVAL;
+                if ((offset < 0) || (offset > data->buf_size)) 
+                {
+                    printk(KERN_INFO "内核 dev_llseek：文件偏移失败！！\n");
+                    return -EINVAL;
+                }
                 filp->f_pos = offset;
                 break;
 
@@ -90,11 +94,11 @@ static ssize_t dev_write(struct file *filp, const char __user *buf, size_t len, 
         return -EFAULT;
     }
 
-    /* 新增：LED灯控制部分 */
-    if(data->buffer[*off] == LEDON) {
+    /* 硬件LED灯控制部分: 提示，注意 data->buffer[0] 表示缓冲区第0位。而不是 (*off) */
+    if(data->buffer[0] == LEDON) {
         led_switch(LEDON);  /* 打开 LED 灯  */
     }
-    else if(data->buffer[*off] == LEDOFF) { 
+    else if(data->buffer[0] == LEDOFF) { 
         led_switch(LEDOFF);  /* 关闭 LED 灯  */
     }
 
