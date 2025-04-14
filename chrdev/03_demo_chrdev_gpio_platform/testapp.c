@@ -68,10 +68,9 @@ int main() {
                 print_usage();
                 continue;
             }
-            int data_in = atoi(param); /* 返回为 int 类型变量，与内核存储变量一致 */
-            int cnt_to_write = 1;
+            char data_in = atoi(param); /* 返回为 int 类型变量，与内核存储变量一致 */
             /* 提醒：Unix C 的 write 系统调用函数，没有原生修改文件 offset 的能力。 */
-            ssize_t cnt_written = write(fd, &data_in, cnt_to_write);
+            ssize_t cnt_written = write(fd, &data_in, sizeof(data_in));
             if (cnt_written < 0) {
                 perror("写入内核失败！");
             } else {
