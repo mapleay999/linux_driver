@@ -72,12 +72,12 @@ static ssize_t dev_read(struct file *filp, char __user *buf, size_t len_to_meet,
     size_t cnt_read = min_t(size_t, len_to_meet, data->data_len - *off); //min截短
 
     if (cnt_read == 0) {
-        printk(KERN_INFO "内核 chrdev_read：内核数据读出完毕！\n");
+        printk(KERN_INFO "内核 chrdev_read：内核数据早已读出完毕！无法继续读出！\n");
         return 0;
     }
 
     if (copy_to_user(buf, data->buffer + *off, cnt_read)) {
-        printk(KERN_ERR "内核 chrdev_read：复制数据到用户空间操作失败！\n");
+        printk(KERN_ERR "内核 chrdev_read：从内核复制数据到用户空间操作失败！\n");
         return -EFAULT;
     }
 
@@ -92,7 +92,7 @@ static ssize_t dev_write(struct file *filp, const char __user *buf, size_t len_t
     size_t cnt_write = min_t(size_t, len_to_meet, data->buf_size - *off); //min，二进制安全，取小。OK。
     
     if (cnt_write == 0) {
-        printk(KERN_INFO "内核 chrdev_write：缓冲区已满，无法继续写入！\n");
+        printk(KERN_INFO "内核 chrdev_write：内核缓冲区已满，无法继续写入！\n");
         return -ENOSPC;
     }
     
@@ -109,8 +109,8 @@ static ssize_t dev_write(struct file *filp, const char __user *buf, size_t len_t
         led_switch(LEDOFF);  /* 关闭 LED 灯  */
     }
     else{
-        printk(KERN_INFO "内核缓冲区内容：data->buffer[0]的值是：%u\n", data->buffer[0]);
-        printk(KERN_ERR "硬件控制失败！\n");
+        printk(KERN_INFO "内核缓冲区内容：data->buffer[0]的值是：%d\n", data->buffer[0]);
+        printk(KERN_ERR "硬件操控失败！\n");
     }
 
     *off += cnt_write;
