@@ -9,6 +9,7 @@
 #include <linux/slab.h>     /* 内核内存分配    */
 #include <linux/ioctl.h>    /* ioctl相关定义   */
 #include <linux/string.h>   /* 内核的 strlen() */
+#include <linux/platform_device.h>
 #include "chrdev_ioctl.h"
 #include "chrdev.h"         /* 自定义内核字符设备驱动框架信息 */
 #include "stm32mp157d.h"    /* 自定义内核控制的硬件相关信息 */
@@ -185,7 +186,7 @@ static struct file_operations fops = {
     .release        = dev_release,
 };
 
-static int __init chrdev_init(void) {
+static int chrdev_init(void) {
     
     int err = 0;
     /* 0. 初始化 stm32mp157d 的 gpio 硬件部分 */
@@ -257,7 +258,7 @@ fail_devnum:
     return err;
 }
 
-static void __exit chrdev_exit(void) {
+static void chrdev_exit(void) {
     
     /* 0. 注销硬件资源：解除内核中注册的引脚映射 */
     led_deinit();
@@ -278,8 +279,48 @@ static void __exit chrdev_exit(void) {
     printk(KERN_INFO "chrdev_exit:Goodbye Kernel! 模块已卸载！\r\n");
 }
 
-module_init(chrdev_init);
-module_exit(chrdev_exit);
+static int hello_probe(struct platform_device *pdev)
+{
+    printk("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    chrdev_init();
+    return 0;
+}
+
+static int hello_remove(struct platform_device *pdev)
+{
+    printk("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    chrdev_exit();
+    return 0;
+}
+
+
+static struct platform_driver hello_driver = {
+    .probe      = hello_probe,
+    .remove     = hello_remove,
+    .driver     = {
+                    .name = "100ask_hello",
+    },
+};
+
+static int __init hello_drv_init(void)
+{
+    int err;
+
+    printk("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    err = platform_driver_register(&hello_driver); 
+
+    return err;
+}
+
+static void __exit hello_drv_exit(void)
+{
+    printk("%s %s %d\n", __FILE__, __FUNCTION__, __LINE__);
+    platform_driver_unregister(&hello_driver);
+}
+
+module_init(hello_drv_init);
+module_exit(hello_drv_exit);
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Mapleay");
-MODULE_DESCRIPTION("A DEMO character device driver by Mapleay.");
+MODULE_DESCRIPTION("纯纯增加一个平台设备驱动框架.");

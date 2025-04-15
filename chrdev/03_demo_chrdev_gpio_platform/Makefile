@@ -8,10 +8,11 @@ TARGET_PATH  := /home/ericedward/linux_space/tools/nfs/rootfs/home/maple/linux_d
 WORKING_PATH := /home/ericedward/linux_space/linux_driver/chrdev/01_chrdev
 
 # 指定生成模块目标
-obj-m += demo_chrdev.o
+obj-m += chrdev_platfrom_driver_m.o # 多个c文件依赖的时候，保证目标不能跟c文件重名，否则编译警告无GPL license。2025年4月15日15:18:20
+obj-m += chrdev_platfrom_device.o
 # 内核模块的构建系统（Kbuild）要求通过 `<module_name>-objs` 指定模块的依赖对象文件，而非直接赋值给模块名。
 # 错误写法：demo_chrdev := chrdev.o stm32mp157.o 
-demo_chrdev-objs := chrdev.o stm32mp157.o # 定义demo_chrdev目标的依赖，注意：是 -objs 别少s！
+chrdev_platfrom_driver_m-objs := chrdev_platfrom_driver.o stm32mp157.o # 定义demo_chrdev目标的依赖，注意：是 -objs 别少s！
 
 # 在模块的 Makefile 中，使用 ccflags-y 或 CFLAGS_MODULE 指定自定义头文件路径
 # 添加自定义头文件路径（相对于 Makefile 的路径）
