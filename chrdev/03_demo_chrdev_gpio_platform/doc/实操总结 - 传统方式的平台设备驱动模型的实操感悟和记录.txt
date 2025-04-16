@@ -1,0 +1,43 @@
+本次代码目的：
+1. 学习 linux 平台设备驱动模型：实现设备信息（C文件承载的传统非设备树方式）与驱动代码的分离。
+2. 实例中仅仅是一个点led灯操作，其中涉及到 6 个寄存器操作。为了全面学习，所以将 struct resource 和 dev.platform_data两种注入硬件信息的方法都实现了。
+2.1 MPU_AHB4_PERIPH_RCC_PI/GPIOI_MODER_PI/GPIOI_OTYPER_PI/GPIOI_OSPEEDR_PI/GPIOI_PUPDR_PI 这5个寄存器通过板级硬件信息结构(void*) platform_data作为中转，进行关联，就是复制，没啥说的，自定义的数据类型。
+2.2 GPIOI_BSRR_PI 这1个寄存器，通过标准内核支持的 struct resource 方式注入内核，也就是注入内核的平台设备驱动框架内。
+3. 总而言之，只是将这6个寄存器的硬件信息，分为板级和内置级别的数据结构，进行注入到框架内，最终实现如下代码的功能：
+    //1. 寄存器地址映射
+    MPU_AHB4_PERIPH_RCC_PI = ioremap(RCC_MP_AHB4ENSETR, 4);  //2. 使能 PI 时钟:          platform_data
+    GPIOI_MODER_PI         = ioremap(GPIOI_MODER, 4);        //3. 设置 PI0 通用的输出模式: platform_data
+    GPIOI_OTYPER_PI        = ioremap(GPIOI_OTYPER, 4);       //4. 设置 PI0 为推挽模式:    platform_data
+    GPIOI_OSPEEDR_PI       = ioremap(GPIOI_OTYPER, 4);       //5. 设置 PI0 为高速:        platform_data
+    GPIOI_PUPDR_PI         = ioremap(GPIOI_PUPDR, 4);        //6. 设置 PI0 为上拉:        platform_data
+    GPIOI_BSRR_PI          = ioremap(GPIOI_BSRR, 4);         //7. 开关 LED:              resource
+    仅仅就是实现上面这段代码的功能。其他全部视为驱动代码。这样思考应该是合理的。
+2025年4月16日21:47:28
+
+/*
+0. 驱动和设备分离程度的思考及linux支持的注入接口：
+   0.1 驱动（操作函数）和设备（硬件信息，以C语言中的各种数据结构体现）的划分程度，完全自定义，
+       标准就是合理且够用，有些不需要给用户空间暴露出的操纵接口的硬件参数，可以写死在驱动中。
+       这里的实例是操纵led灯，所以干脆极端一点，将所有硬件信息都注入内核，供调用，反正工作量
+       不大。
+   0.2 既然分离后需要分别注入内核，那么就要入乡随俗，遵循linux内相关子系统的框架规则，注入。
+       入乡随俗的方式有两种：传统的驱动c文件+设备c文件方式；推荐的驱动c文件+设备树方式。
+       本次实例，采用传统的驱动c文件+设备c文件，后续会推进到第二种使用设备树的方式。
+       
+1. 向内核注入设备的硬件信息：resource 硬件信息的挂接 + platform_data 硬件信息的挂接，一共两种。
+   思考：哪些信息需要挂接到 struct platform_device 的 struct resource ？ 
+        哪些信息需要挂接到 struct platform_device 的 struct device 的 (void*) platform_data？
+   实例是控制led灯，似乎自己可以任意程度挂接到这俩货那里。
+   这里为了符合操作逻辑，也为了全面体验这俩货，所以计划这样：
+       GPIO输出高低电平挂接在resource上；
+       GPIO的工作配置模式挂接在platform_data上；
+       
+    //1. 寄存器地址映射
+    MPU_AHB4_PERIPH_RCC_PI = ioremap(RCC_MP_AHB4ENSETR, 4);  //2. 使能 PI 时钟:          platform_data
+    GPIOI_MODER_PI         = ioremap(GPIOI_MODER, 4);        //3. 设置 PI0 通用的输出模式: platform_data
+    GPIOI_OTYPER_PI        = ioremap(GPIOI_OTYPER, 4);       //4. 设置 PI0 为推挽模式:    platform_data
+    GPIOI_OSPEEDR_PI       = ioremap(GPIOI_OTYPER, 4);       //5. 设置 PI0 为高速:        platform_data
+    GPIOI_PUPDR_PI         = ioremap(GPIOI_PUPDR, 4);        //6. 设置 PI0 为上拉:        platform_data
+    GPIOI_BSRR_PI          = ioremap(GPIOI_BSRR, 4);         //7. 开关 LED:              resource
+*/
+/************************ platform_data: 开始 ***************************************/
