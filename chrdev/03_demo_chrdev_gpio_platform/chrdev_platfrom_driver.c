@@ -473,6 +473,7 @@ static int led_probe(struct platform_device *pdev)
 static int led_remove(struct platform_device *pdev)
 {
     chrdev_exit();
+    printk(KERN_INFO "平台设备驱动框架:platform_driver:led_remove：正在被调用！\n");
     return 0;
 }
 

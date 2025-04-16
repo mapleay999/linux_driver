@@ -100,9 +100,9 @@ static struct resource led_resource[] = { //只有一个led_pin，编号暂时�
 /************************ resource data: 结束 ***************************************/
 
 
-static void chrdev_dev_release(struct device *dev)
+static void led_release(struct device *dev)
 {
-    printk(KERN_INFO "平台设备驱动框架：chrdev_dev_release：正在被调用！\n");
+    printk(KERN_INFO "平台设备驱动框架:paltform_device:led_release：正在被调用！\n");
 }
 
 
@@ -113,7 +113,7 @@ static struct platform_device chrdev_platform_dev = {
         .resource      = led_resource,                 //注入 resource data：注入标准信息：IO/IRQ/MEM
         .dev           = {
                            .platform_data = &led_platform_info, //注入 platform_data：注入个性化板级信息
-                           .release = chrdev_dev_release
+                           .release = led_release
          },
 };
 

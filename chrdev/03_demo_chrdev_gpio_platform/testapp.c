@@ -38,7 +38,6 @@ int main() {
     }
 
     printf("字符设备操作程序已启动（输入 help 显示帮助）\n");
-    print_usage();
 
     while (1) {
         // 读取用户输入
