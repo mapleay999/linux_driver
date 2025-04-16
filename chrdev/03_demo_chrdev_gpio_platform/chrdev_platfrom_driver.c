@@ -434,15 +434,16 @@ static int led_probe(struct platform_device *pdev)
 
     /* 1. 获取硬件信息，填入驱动代码执行：寄存器地址映射操作 */
     //1.1 通过pdev获取resource描述的硬件信息: 
+    printk(KERN_INFO "从标准级方式，获取到的硬件信息元素为 %u 个。\n", pdev->num_resources);
     ppin_register    = platform_get_resource(pdev, IORESOURCE_MEM, 0); //ppin_register    = &led_resource[0]
     ppin_attribution = platform_get_resource(pdev, IORESOURCE_IRQ, 0); //ppin_attribution = &led_resource[1]
     if (ppin_attribution->start == LEDPIN_NO){ //获取可以亮灭小灯的引脚编号,验证
         GPIOI_BSRR_PI = ioremap(ppin_register->start, 4);
-    }
+    } else {printk(KERN_ERR"从标准级信息解析失败！");}
     
     //1.2 通过pdev获取platform_device.device.platform_data描述的板级硬件信息
     ppltfm_dat = dev_get_platdata(&pdev->dev);
-    printk(KERN_INFO "从板级设备信息里获取到了 %d 个元素单元\n", ppltfm_dat->pin_cnt);
+    printk(KERN_INFO "从板级设备信息里获取到了 %d 个元素单元。\n", ppltfm_dat->pin_cnt);
     if (!strcmp(ppltfm_dat->ppin[0].name, "MPU_AHB4_PERIPH_RCC_PI")){
         MPU_AHB4_PERIPH_RCC_PI = ioremap(ppltfm_dat->ppin[0].addr, 4);
     } else {printk(KERN_ERR"板级信息解析失败！");}
