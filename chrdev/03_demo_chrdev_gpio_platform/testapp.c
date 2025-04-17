@@ -17,7 +17,7 @@ void print_usage() {
     printf("  c                 清空缓冲区\n");
     printf("  buf_size          获取缓冲区大小\n");
     printf("  data_len          获取当前数据长度\n");
-    printf("  update_len <长度>  更新数据长度\n");
+    printf("  update_len <长度> 更新数据长度\n");
     printf("  p                 请内核中打印缓冲区数据\n");
     printf("  help              显示帮助信息\n");
     printf("  exit              退出程序\n");
@@ -37,7 +37,8 @@ int main() {
         return -1;
     }
 
-    printf("字符设备操作程序已启动（输入 help 显示帮助）\n");
+    printf("测试应用程序已启动（输入 help 显示帮助）：\n");
+    printf(">> ");
 
     while (1) {
         // 读取用户输入

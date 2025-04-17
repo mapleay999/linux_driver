@@ -15,6 +15,8 @@
 #include "chrdev_ioctl.h"
 #include "chrdev.h"         /* 自定义内核字符设备驱动框架信息 */
 #include "stm32mp157d.h"
+#include <linux/mod_devicetable.h> /* struct platform_device_id */
+
 
 
 /*
@@ -336,8 +338,6 @@ static struct file_operations fops = {
 static int chrdev_init(void) {
     
     int err = 0;
-    /* 0. 初始化 stm32mp157d 的 gpio 硬件部分 */
-    led_init();
 
     /* 1. 申请主设备号：动态申请方式（推荐方式） */
     if (alloc_chrdev_region(&chrdev.dev_num, MINOR_BASE, MINOR_COUNT, DEVICE_NAME))
@@ -400,15 +400,12 @@ fail_cdev:
 fail_buffer:
     unregister_chrdev_region(chrdev.dev_num, MINOR_COUNT);
 fail_devnum:
-    led_deinit();
+    ;
 
     return err;
 }
 
 static void chrdev_exit(void) {
-    
-    /* 0. 注销硬件资源：解除内核中注册的引脚映射 */
-    led_deinit();
     
     /* 1. 销毁设备节点和设备类 */
     device_destroy(chrdev.dev_class, chrdev.dev_num);
@@ -423,18 +420,19 @@ static void chrdev_exit(void) {
     /* 4. 释放缓冲区 */
     kfree(chrdev.dev_data.buffer);
     
-    printk(KERN_INFO "chrdev_exit:Goodbye Kernel! 模块已卸载！\r\n");
+    printk(KERN_INFO "chrdev_exit:Goodbye Kernel! 字符设备模块已卸载！\r\n");
 }
 
 static int led_probe(struct platform_device *pdev)
 {
+    int i = 0;
     struct resource *ppin_register;         //resource 的硬件信息：
     struct resource *ppin_attribution;      //resource 的硬件信息：
     struct led_platform_data *ppltfm_dat;   //platform_data 的硬件信息：= &led_platform_info
 
     /* 1. 获取硬件信息，填入驱动代码执行：寄存器地址映射操作 */
     //1.1 通过pdev获取resource描述的硬件信息: 
-    printk(KERN_INFO "从标准级方式，获取到的硬件信息元素为 %u 个。\n", pdev->num_resources);
+    printk(KERN_INFO "获取硬件信息：从resource方式，获取到了 %u 个元素单元。\n", pdev->num_resources);
     ppin_register    = platform_get_resource(pdev, IORESOURCE_MEM, 0); //ppin_register    = &led_resource[0]
     ppin_attribution = platform_get_resource(pdev, IORESOURCE_IRQ, 0); //ppin_attribution = &led_resource[1]
     if (ppin_attribution->start == LEDPIN_NO){ //获取可以亮灭小灯的引脚编号,验证
@@ -443,46 +441,74 @@ static int led_probe(struct platform_device *pdev)
     
     //1.2 通过pdev获取platform_device.device.platform_data描述的板级硬件信息
     ppltfm_dat = dev_get_platdata(&pdev->dev);
-    printk(KERN_INFO "从板级设备信息里获取到了 %d 个元素单元。\n", ppltfm_dat->pin_cnt);
-    if (!strcmp(ppltfm_dat->ppin[0].name, "MPU_AHB4_PERIPH_RCC_PI")){
-        MPU_AHB4_PERIPH_RCC_PI = ioremap(ppltfm_dat->ppin[0].addr, 4);
-    } else {printk(KERN_ERR"板级信息解析失败！");}
-
-    if (!strcmp(ppltfm_dat->ppin[1].name, "GPIOI_MODER_PI")){
-        GPIOI_MODER_PI = ioremap(ppltfm_dat->ppin[1].addr, 4);
-    } else {printk(KERN_ERR"板级信息解析失败！");}
-
-    if (!strcmp(ppltfm_dat->ppin[2].name, "GPIOI_OTYPER_PI")){
-        GPIOI_OTYPER_PI = ioremap(ppltfm_dat->ppin[2].addr, 4);
-    } else {printk(KERN_ERR"板级信息解析失败！");}
-
-    if (!strcmp(ppltfm_dat->ppin[3].name, "GPIOI_OSPEEDR_PI")){
-        GPIOI_OSPEEDR_PI = ioremap(ppltfm_dat->ppin[3].addr, 4);
-    } else {printk(KERN_ERR"板级信息解析失败！");}
-
-    if (!strcmp(ppltfm_dat->ppin[4].name, "GPIOI_PUPDR_PI")){
-        GPIOI_PUPDR_PI = ioremap(ppltfm_dat->ppin[4].addr, 4);
-    } else {printk(KERN_ERR"板级信息解析失败！");}
-
+    printk(KERN_INFO "获取硬件信息：从板级设备信息里获取到了 %d 个元素单元。\n", ppltfm_dat->pin_cnt);
+	for (i = 0; i < ppltfm_dat->pin_cnt; i++) {
+		struct led_pin *pin = &ppltfm_dat->ppin[i];
+		void __iomem **reg = NULL;
+		
+		if (!strcmp(pin->name, "MPU_AHB4_PERIPH_RCC_PI")) {
+			reg = &MPU_AHB4_PERIPH_RCC_PI;
+		} else if (!strcmp(pin->name, "GPIOI_MODER_PI")) {
+			reg = &GPIOI_MODER_PI;
+		} else if (!strcmp(pin->name, "GPIOI_OTYPER_PI")) {
+			reg = &GPIOI_OTYPER_PI;
+		} else if (!strcmp(pin->name, "GPIOI_OSPEEDR_PI")) {
+			reg = &GPIOI_OSPEEDR_PI;
+		} else if (!strcmp(pin->name, "GPIOI_PUPDR_PI")) {
+			reg = &GPIOI_PUPDR_PI;
+		} else {
+			printk(KERN_ERR"不支持的硬件信息！");
+		}
+		
+		if (reg) {
+			*reg = ioremap(pin->addr, 4);
+			if (!*reg) {
+				dev_err(&pdev->dev, "板级硬件信息映射失败： %s ！\n", pin->name);
+				return -ENOMEM;
+			}
+		}
+	}
+	/* 1.3 初始化LED灯 */
+    led_init(); 
 
     /* 2. 注册字符设备 */
-    chrdev_init();
+    if(chrdev_init()){
+		led_deinit();
+		return -1;
+	}
+	
     return 0;
 }
 
 static int led_remove(struct platform_device *pdev)
 {
+    /* 0. 注销硬件资源：解除内核中注册的引脚映射 */
+    led_deinit();
     chrdev_exit();
     printk(KERN_INFO "平台设备驱动框架:platform_driver:led_remove：正在被调用！\n");
     return 0;
 }
 
+/* name 字段：为纯字符串匹配 
+ * driver_data 字段，用于： 
+ * 当驱动需要支持多个设备变种（如不同型号、不同寄存器布局或不同硬件参数）时，
+ * driver_data可以存储每个设备的唯一标识符（如设备型号ID）或指向配置结构体的指针。
+ * 在驱动的probe函数中，通过匹配到的platform_device_id条目获取driver_data，
+ * 从而初始化对应的硬件参数。
+*/
+static const struct platform_device_id led_driver_ids[] = {
+	{ .name = "mapleay-pltfm-led", .driver_data = 0, },
+	{ }
+};
+MODULE_DEVICE_TABLE(platform, led_driver_ids);
+
 
 static struct platform_driver chrdev_platform_drv = {
     .probe  = led_probe,
     .remove = led_remove,
+    .id_table = led_driver_ids, //使用 id_table 进行匹配，优先级高于 drv.name 。
     .driver = {
-              .name = "mapleay-platform-led",
+              .name = "cleaned for id_table testing", //优先级低于上面两行的 id_table 。
     },
 };
 

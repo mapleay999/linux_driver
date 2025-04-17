@@ -107,7 +107,7 @@ static void led_release(struct device *dev)
 
 
 static struct platform_device chrdev_platform_dev = {
-        .name          = "mapleay-platform-led",
+        .name          = "mapleay-pltfm-led",
         .id            = -1,
         .num_resources = ARRAY_SIZE(led_resource),
         .resource      = led_resource,                 //注入 resource data：注入标准信息：IO/IRQ/MEM
