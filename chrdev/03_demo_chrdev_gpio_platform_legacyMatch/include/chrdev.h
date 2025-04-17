@@ -21,7 +21,6 @@ typedef struct chrdev_object {
     struct device *dev_device;
     struct cdev_private_data_t dev_data;
     dev_t  dev_num;
-	struct device_node *nd;  /* 设备节点 2025年4月17日15:04:27 */
 }chrdev_t;
 
 #endif

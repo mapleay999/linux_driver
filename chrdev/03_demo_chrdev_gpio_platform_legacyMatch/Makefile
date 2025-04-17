@@ -10,7 +10,7 @@ WORKING_PATH := /home/ericedward/linux_space/linux_driver/chrdev/01_chrdev
 # 指定生成模块目标
 ##obj-m += chrdev_platfrom_driver_m.o # 多个c文件依赖的时候，保证目标不能跟c文件重名，否则编译警告无GPL license。2025年4月15日15:18:20
 obj-m += chrdev_platfrom_driver.o
-# obj-m += chrdev_platfrom_device.o # 使用设备树，不需要设备C文件了，移除构建过程。2025年4月17日15:57:19
+obj-m += chrdev_platfrom_device.o
 # 内核模块的构建系统（Kbuild）要求通过 `<module_name>-objs` 指定模块的依赖对象文件，而非直接赋值给模块名。
 # 错误写法：demo_chrdev := chrdev.o stm32mp157.o 
 ##chrdev_platfrom_driver_m-objs := chrdev_platfrom_driver.o stm32mp157.o # 定义demo_chrdev目标的依赖，注意：是 -objs 别少s！

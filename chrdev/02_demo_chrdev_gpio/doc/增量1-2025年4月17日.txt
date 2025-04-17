@@ -1,0 +1,343 @@
+其实简单的字符设备驱动程序，比如通过GPIO控制LED灯实验，可以直接将数个寄存器属性插入到设备树，在驱动程序中直接解析直接用。
+这也是某种程度的驱动与设备的分离，可以不需要使用平台设备驱动模型，就能实现兼容性、移植性不错的效果。2025年4月17日14:01:58
+这点在正点原子 stm32mp157d 开发板的开发手册上的demo代码中可以体现：
+
+示例代码 24.3.2.1 dtsled.c 文件内容 
+1   #include <linux/types.h> 
+2   #include <linux/kernel.h> 
+3   #include <linux/delay.h> 
+4   #include <linux/ide.h> 
+5   #include <linux/init.h> 
+6   #include <linux/module.h> 
+7   #include <linux/errno.h> 
+8   #include <linux/gpio.h> 
+9   #include <linux/cdev.h> 
+10  #include <linux/device.h> 
+11  #include <linux/of.h> 
+12  #include <linux/of_address.h> 
+13  #include <asm/mach/map.h> 
+14  #include <asm/uaccess.h> 
+15  #include <asm/io.h> 
+16  
+17  /*************************************************************** 
+18  Copyright © ALIENTEK Co., Ltd. 1998-2029. All rights reserved. 
+19  文件名     : dtsled.c 
+20  作者        : 正点原子 Linux 团队 
+21  版本        : V1.0 
+22  描述        : LED 驱动文件。 
+23  其他        : 无 
+24  论坛        : www.openedv.com 
+25  日志        : 初版 V1.0 2020/12/19 正点原子 Linux 团队创建 
+26  ***************************************************************/ 
+27  #define DTSLED_CNT        1            /* 设备号个数   */ 
+28  #define DTSLED_NAME      "dtsled"   /* 名字     */ 
+29  #define LEDOFF            0           /* 关灯      */ 
+30  #define LEDON              1           /* 开灯      */ 
+31  
+32  /* 映射后的寄存器虚拟地址指针 */ 
+33  static void __iomem *MPU_AHB4_PERIPH_RCC_PI; 
+34  static void __iomem *GPIOI_MODER_PI; 
+35  static void __iomem *GPIOI_OTYPER_PI; 
+36  static void __iomem *GPIOI_OSPEEDR_PI; 
+37  static void __iomem *GPIOI_PUPDR_PI; 
+38  static void __iomem *GPIOI_BSRR_PI; 
+39  
+40  /* dtsled 设备结构体 */ 
+41  struct dtsled_dev{ 
+42      dev_t devid;              /* 设备号       */ 
+43      struct cdev cdev;         /* cdev       */ 
+44      struct class *class;     /* 类         */ 
+45      struct device *device;   /* 设备       */ 
+46      int major;                /* 主设备号     */ 
+47      int minor;                /* 次设备号     */ 
+48      struct device_node  *nd; /* 设备节点   */ 
+49  }; 
+50  
+51  struct dtsled_dev dtsled;    /* led 设备   */ 
+52  
+53  /* 
+54   * @description   : LED 打开/关闭 
+55   * @param - sta   : LEDON(0) 打开 LED，LEDOFF(1) 关闭 LED 
+56   * @return         : 无 
+57   */ 
+58  void led_switch(u8 sta) 
+59  { 
+60      u32 val = 0; 
+61      if(sta == LEDON) { 
+62          val = readl(GPIOI_BSRR_PI); 
+63          val |= (1 << 16);    
+64          writel(val, GPIOI_BSRR_PI); 
+65      }else if(sta == LEDOFF) { 
+66          val = readl(GPIOI_BSRR_PI); 
+67          val|= (1 << 0);  
+68          writel(val, GPIOI_BSRR_PI); 
+69      }    
+70  } 
+71  
+72  /* 
+73   * @description   : 取消映射 
+74   * @return         : 无 
+75   */ 
+76  void led_unmap(void) 
+77  { 
+78      /* 取消映射 */ 
+79      iounmap(MPU_AHB4_PERIPH_RCC_PI); 
+80      iounmap(GPIOI_MODER_PI); 
+81      iounmap(GPIOI_OTYPER_PI); 
+82      iounmap(GPIOI_OSPEEDR_PI); 
+83      iounmap(GPIOI_PUPDR_PI); 
+84      iounmap(GPIOI_BSRR_PI); 
+85  } 
+86  
+87  /* 
+88   * @description   : 打开设备 
+89   * @param – inode : 传递给驱动的 inode 
+90   * @param - filp  : 设备文件，file 结构体有个叫做 private_data 的成员变量 
+91   *                    一般在 open 的时候将 private_data 指向设备结构体。 
+92   * @return         : 0 成功;其他 失败 
+93   */ 
+94  static int led_open(struct inode *inode, struct file *filp) 
+95  { 
+96      filp->private_data = &dtsled; /* 设置私有数据 */ 
+97      return 0; 
+98  } 
+99  
+100 /* 
+101  * @description   : 从设备读取数据  
+102  * @param - filp  : 要打开的设备文件(文件描述符) 
+103  * @param - buf   : 返回给用户空间的数据缓冲区 
+104  * @param - cnt   : 要读取的数据长度 
+105  * @param - offt  : 相对于文件首地址的偏移 
+106  * @return         : 读取的字节数，如果为负值，表示读取失败 
+107  */ 
+108 static ssize_t led_read(struct file *filp, char __user *buf,  
+size_t cnt, loff_t *offt) 
+109 { 
+110     return 0; 
+111 } 
+112 
+113 /* 
+114  * @description   : 向设备写数据  
+115  * @param - filp  : 设备文件，表示打开的文件描述符 
+116  * @param - buf   : 要写给设备写入的数据 
+117  * @param - cnt   : 要写入的数据长度 
+118  * @param - offt  : 相对于文件首地址的偏移 
+119  * @return         : 写入的字节数，如果为负值，表示写入失败 
+120  */ 
+121 static ssize_t led_write(struct file *filp, const char __user *buf, 
+                  size_t cnt, loff_t *offt) 
+122 { 
+123     int retvalue; 
+124     unsigned char databuf[1]; 
+125     unsigned char ledstat; 
+126 
+127     retvalue = copy_from_user(databuf, buf, cnt); 
+128     if(retvalue < 0) { 
+129         printk("kernel write failed!\r\n"); 
+130         return -EFAULT; 
+131     } 
+132 
+133     ledstat = databuf[0];       /* 获取状态值     */ 
+134 
+135     if(ledstat == LEDON) {   
+136         led_switch(LEDON);        /* 打开 LED 灯     */ 
+137     } else if(ledstat == LEDOFF) { 
+138         led_switch(LEDOFF);    /* 关闭 LED 灯     */ 
+139     } 
+140     return 0; 
+141 } 
+142 
+143 /* 
+144  * @description   : 关闭/释放设备 
+145  * @param – filp  : 要关闭的设备文件(文件描述符) 
+146  * @return         : 0 成功;其他 失败 
+147  */ 
+148 static int led_release(struct inode *inode, struct file *filp) 
+149 { 
+150     return 0; 
+151 } 
+152 
+153 /* 设备操作函数 */ 
+154 static struct file_operations dtsled_fops = { 
+155     .owner = THIS_MODULE, 
+156     .open = led_open, 
+157     .read = led_read, 
+158     .write = led_write, 
+159     .release =  led_release, 
+160 }; 
+161 
+162 /* 
+163  * @description   : 驱动出口函数 
+164  * @param         : 无 
+165  * @return        : 无 
+166  */ 
+167 static int __init led_init(void) 
+168 { 
+169     u32 val = 0; 
+170     int ret; 
+171     u32 regdata[12]; 
+172     const char *str; 
+173     struct property *proper; 
+174 
+175     /* 获取设备树中的属性数据       */ 
+176     /* 1、获取设备节点：stm32mp1_led  */ 
+177     dtsled.nd = of_find_node_by_path("/stm32mp1_led"); 
+178     if(dtsled.nd == NULL) { 
+179         printk("stm32mp1_led node nost find!\r\n"); 
+180         return -EINVAL; 
+181     } else { 
+182         printk("stm32mp1_lcd node find!\r\n"); 
+183     } 
+184 
+185     /* 2、获取 compatible 属性内容 */ 
+186     proper = of_find_property(dtsled.nd, "compatible", NULL); 
+187     if(proper == NULL) { 
+188         printk("compatible property find failed\r\n"); 
+189     } else { 
+190         printk("compatible = %s\r\n", (char*)proper->value); 
+191     } 
+192 
+193     /* 3、获取 status 属性内容 */ 
+194     ret = of_property_read_string(dtsled.nd, "status", &str); 
+195     if(ret < 0){ 
+196         printk("status read failed!\r\n"); 
+197     } else { 
+198         printk("status = %s\r\n",str); 
+199     } 
+200 
+201     /* 4、获取 reg 属性内容 */ 
+202     ret = of_property_read_u32_array(dtsled.nd, "reg", regdata, 12); 
+203     if(ret < 0) { 
+204         printk("reg property read failed!\r\n"); 
+205     } else { 
+206         u8 i = 0; 
+207         printk("reg data:\r\n"); 
+208         for(i = 0; i < 12; i++) 
+209             printk("%#X ", regdata[i]); 
+210         printk("\r\n"); 
+211     } 
+212 
+213     /* 初始化 LED       */ 
+214     /* 1、寄存器地址映射   */ 
+215     MPU_AHB4_PERIPH_RCC_PI = of_iomap(dtsled.nd, 0); 
+216     GPIOI_MODER_PI = of_iomap(dtsled.nd, 1); 
+217     GPIOI_OTYPER_PI = of_iomap(dtsled.nd, 2); 
+218     GPIOI_OSPEEDR_PI = of_iomap(dtsled.nd, 3); 
+219     GPIOI_PUPDR_PI = of_iomap(dtsled.nd, 4); 
+220     GPIOI_BSRR_PI = of_iomap(dtsled.nd, 5); 
+221 
+222     /* 2、使能 PI 时钟 */ 
+223     val = readl(MPU_AHB4_PERIPH_RCC_PI); 
+224     val &= ~(0X1 << 8);  /* 清除以前的设置   */ 
+225     val |= (0X1 << 8);   /* 设置新值      */ 
+226     writel(val, MPU_AHB4_PERIPH_RCC_PI); 
+227 
+228     /* 3、设置 PI0 通用的输出模式。*/ 
+229     val = readl(GPIOI_MODER_PI); 
+230     val &= ~(0X3 << 0);    /* bit0:1 清零    */ 
+231     val |= (0X1 << 0);     /* bit0:1 设置 01   */ 
+232     writel(val, GPIOI_MODER_PI); 
+233 
+234     /* 3、设置 PI0 为推挽模式。*/ 
+235     val = readl(GPIOI_OTYPER_PI); 
+236     val &= ~(0X1 << 0);    /* bit0 清零，设置为上拉*/ 
+237     writel(val, GPIOI_OTYPER_PI); 
+238 
+239     /* 4、设置 PI0 为高速。*/ 
+240     val = readl(GPIOI_OSPEEDR_PI); 
+241     val &= ~(0X3 << 0);    /* bit0:1 清零     */ 
+242     val |= (0x2 << 0);     /* bit0:1 设置为 10   */ 
+243     writel(val, GPIOI_OSPEEDR_PI); 
+244 
+245     /* 5、设置 PI0 为上拉。*/ 
+246     val = readl(GPIOI_PUPDR_PI); 
+247     val &= ~(0X3 << 0);    /* bit0:1 清零     */ 
+248     val |= (0x1 << 0);     /* bit0:1 设置为 01   */ 
+249     writel(val,GPIOI_PUPDR_PI); 
+250 
+251     /* 6、默认关闭 LED */ 
+252     val = readl(GPIOI_BSRR_PI); 
+253     val |= (0x1 << 0); 
+254     writel(val, GPIOI_BSRR_PI); 
+255 
+256     /* 注册字符设备驱动 */ 
+257     /* 1、创建设备号 */ 
+258     if (dtsled.major) {      /*  定义了设备号     */ 
+259         dtsled.devid = MKDEV(dtsled.major, 0); 
+260         ret = register_chrdev_region(dtsled.devid, DTSLED_CNT, DTSLED_NAME); 
+261         if(ret < 0) { 
+262             pr_err("cannot register %s char driver [ret=%d]\n",DTSLED_NAME, DTSLED_CNT); 
+263             goto fail_map; 
+264         } 
+265     } else {                    /* 没有定义设备号     */ 
+266         ret = alloc_chrdev_region(&dtsled.devid, 0, DTSLED_CNT, DTSLED_NAME);   /* 申请设备号 */ 
+267         if(ret < 0) { 
+268             pr_err("%s Couldn't alloc_chrdev_region, ret=%d\r\n",  
+DTSLED_NAME, ret); 
+269             goto fail_map; 
+270         } 
+271         dtsled.major = MAJOR(dtsled.devid); /* 获取分配号的主设备号 */ 
+272         dtsled.minor = MINOR(dtsled.devid); /* 获取分配号的次设备号 */ 
+273 
+274     } 
+275     printk("dtsled major=%d,minor=%d\r\n",dtsled.major,  
+dtsled.minor);   
+276      
+277     /* 2、初始化 cdev */ 
+278     dtsled.cdev.owner = THIS_MODULE; 
+279     cdev_init(&dtsled.cdev, &dtsled_fops); 
+280      
+281     /* 3、添加一个 cdev */ 
+282     ret = cdev_add(&dtsled.cdev, dtsled.devid, DTSLED_CNT); 
+283     if(ret < 0) 
+284         goto del_unregister; 
+285 
+286     /* 4、创建类     */ 
+287     dtsled.class = class_create(THIS_MODULE, DTSLED_NAME); 
+288     if (IS_ERR(dtsled.class)) { 
+289         goto del_cdev; 
+290     } 
+291 
+292     /* 5、创建设备    */ 
+293     dtsled.device = device_create(dtsled.class, NULL, dtsled.devid,  
+NULL, DTSLED_NAME); 
+294     if (IS_ERR(dtsled.device)) { 
+295         goto destroy_class; 
+296     } 
+297 
+298     return 0; 
+299 
+300 destroy_class: 
+301     class_destroy(dtsled.class); 
+302 del_cdev: 
+303     cdev_del(&dtsled.cdev); 
+304 del_unregister: 
+305     unregister_chrdev_region(dtsled.devid, DTSLED_CNT); 
+306 fail_map: 
+307     led_unmap(); 
+308     return -EIO; 
+309 } 
+310 
+311 /* 
+312  * @description   : 驱动出口函数 
+313  * @param         : 无 
+314  * @return        : 无 
+315  */ 
+316 static void __exit led_exit(void) 
+317 { 
+318     /* 取消映射     */ 
+319     led_unmap(); 
+320 
+321     /* 注销字符设备驱动 */ 
+322     cdev_del(&dtsled.cdev);  /*  删除 cdev */ 
+323     unregister_chrdev_region(dtsled.devid, DTSLED_CNT); /*注销*/ 
+324 
+325     device_destroy(dtsled.class, dtsled.devid); 
+326     class_destroy(dtsled.class); 
+327 } 
+328 
+329 module_init(led_init); 
+330 module_exit(led_exit); 
+331 MODULE_LICENSE("GPL"); 
+332 MODULE_AUTHOR("ALIENTEK"); 
+333 MODULE_INFO(intree, "Y"); 
