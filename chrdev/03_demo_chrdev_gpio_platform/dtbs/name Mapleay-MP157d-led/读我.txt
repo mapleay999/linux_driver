@@ -1,0 +1,5 @@
+匹配名字的字符串是 Mapleay-MP157d-led
+
+修改linux源码路径下的 arch/arm/boot/dts/stm32mp157d-atk.dts 文件后，
+在Linux源码根路径下编译： make dtbs 即可
+将生成的 dtb 放入启动环节：放在 tftp 的路径下，通过网络加载即可。

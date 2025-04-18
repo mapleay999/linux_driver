@@ -390,7 +390,7 @@ static int led_probe(struct platform_device *pdev)
         printk(KERN_ERR "设备树：解析设备节点失败！");
         return -EINVAL;
     } else {
-        printk("设备树：以获取到设备节点：stm32mp1_led node found!\r\n");
+        printk("设备树：已获取到设备节点：stm32mp1_led node found!\r\n");
     }
 
     /* 2. 获取 compatible 属性内容 */
@@ -455,7 +455,7 @@ static int led_remove(struct platform_device *pdev)
 
 
 static const struct of_device_id dts_driver_of_match[] = {
-    { .compatible = "atkstm32mp1-led" }, // 匹配设备树中的 compatible 值
+    { .compatible = "Mapleay-MP157d-led" }, // 匹配设备树中的 compatible 值
     { } // 终止符
 };
 
@@ -463,10 +463,10 @@ static struct platform_driver chrdev_platform_drv = {
     .probe  = led_probe,
     .remove = led_remove,
     .driver = {
-			  /* .name 字段：只需要给不匹配的任意字符串即可触发设备树匹配。但是！！
-			   *			 第一：不能不初始化这个字段！！
-			   *			 第二：不能初始化为 NULL ！！ 否则模块崩溃！！
-			   */
+              /* .name 字段：只需要给不匹配的任意字符串即可触发设备树匹配。但是！！
+               *             第一：不能不初始化这个字段！！
+               *             第二：不能初始化为 NULL ！！ 否则模块崩溃！！
+               */
               .name = "not_matched_strs",
               .of_match_table = dts_driver_of_match, //使用设备树方式
     },
