@@ -1,0 +1,488 @@
+
+1. 最开始 先执行一遍
+make stm32mp15_trusted_defconfig
+cd configs    //进入 uboot 的 configs 目录 
+cp stm32mp15_trusted_defconfig stm32mp15_atk_trusted_defconfig //拷贝 
+
+2. 复制相关配置文件
+cd arch/arm/dts/              //进入 uboot 设备树目录 
+cp stm32mp157d-ed1.dts stm32mp157d-atk.dts  //复制.dts 
+cp stm32mp15xx-edx.dtsi stm32mp157d-atk.dtsi //复制.dtsi 
+cp stm32mp157a-ed1-u-boot.dtsi stm32mp157d-atk-u-boot.dtsi  //复制.dtsi 
+
+3. 修改文件内容
+3.1. u-boot-stm32mp-2020.01/arch/arm/dts$ vi stm32mp157d-atk.dts
+  将 #include "stm32mp15xx-edx.dtsi"  改为 #include "stm32mp15d-atk.dtsi"
+
+3.2. vi stm32mp157d-atk-u-boot.dtsi   # 修改电源管理设置 
+  删除如下内容：
+    21                 st,fastboot-gpios = <&gpioa 13 GPIO_ACTIVE_LOW>;
+    22                 st,stm32prog-gpios = <&gpioa 14 GPIO_ACTIVE_LOW>;
+	
+	26                 red {
+    27                         label = "error";
+    28                         gpios = <&gpioa 13 GPIO_ACTIVE_LOW>;
+    29                         default-state = "off";
+    30                         status = "okay";
+    31                 };
+	
+	51 &pmic {
+    52         u-boot,dm-pre-reloc;
+    53 };
+
+3.3. vi stm32mp157d-atk.dtsi
+  删除如下内容：
+    第一部分：删除 90~104 行的 adc 节点 一共15行
+     90 &adc {
+     91         /* ANA0, ANA1 are dedicated pins and don't need pinctrl: only in6. */
+     92         pinctrl-0 = <&adc1_in6_pins_a>;
+     93         pinctrl-names = "default";
+     94         vdd-supply = <&vdd>;
+     95         vdda-supply = <&vdda>;
+     96         vref-supply = <&vdda>;
+     97         status = "disabled";
+     98         adc1: adc@0 {
+     99                 st,adc-channels = <0 1 6>;
+    100                 /* 16.5 ck_cycles sampling time */
+    101                 st,min-sample-time-nsecs = <400>;
+    102                 status = "okay";
+    103         };
+    104 };
+	  
+	第二部分：删除 114~125 行的 dac 节点 一共12行
+	114 &dac {
+    115         pinctrl-names = "default";
+    116         pinctrl-0 = <&dac_ch1_pins_a &dac_ch2_pins_a>;
+    117         vref-supply = <&vdda>;
+    118         status = "disabled";
+    119         dac1: dac@1 {
+    120                 status = "okay";
+    121         };
+    122         dac2: dac@2 {
+    123                 status = "okay";
+    124         };
+    125 };
+	  
+	第三部分：删除 143~298 行的 i2c4 节点 一共156行
+	143 &i2c4 {
+    144         pinctrl-names = "default", "sleep";
+    145         pinctrl-0 = <&i2c4_pins_a>;
+    146         pinctrl-1 = <&i2c4_pins_sleep_a>;
+    147         i2c-scl-rising-time-ns = <185>;
+    148         i2c-scl-falling-time-ns = <20>;
+    149         clock-frequency = <400000>;
+    150         status = "okay";
+    151         /* spare dmas for other usage */
+    152         /delete-property/dmas;
+    153         /delete-property/dma-names;
+    154 
+    155         pmic: stpmic@33 {
+    156                 compatible = "st,stpmic1";
+    157                 reg = <0x33>;
+    158                 interrupts-extended = <&exti_pwr 55 IRQ_TYPE_EDGE_FALLING>;
+    159                 interrupt-controller;
+    160                 #interrupt-cells = <2>;
+    161                 status = "okay";
+    162 
+    163                 regulators {
+    164                         compatible = "st,stpmic1-regulators";
+    165                         buck1-supply = <&vin>;
+    166                         buck2-supply = <&vin>;
+    167                         buck3-supply = <&vin>;
+    168                         buck4-supply = <&vin>;
+    169                         ldo1-supply = <&v3v3>;
+    170                         ldo2-supply = <&v3v3>;
+    171                         ldo3-supply = <&vdd_ddr>;
+    172                         ldo4-supply = <&vin>;
+    173                         ldo5-supply = <&v3v3>;
+    174                         ldo6-supply = <&v3v3>;
+    175                         vref_ddr-supply = <&vin>;
+    176                         boost-supply = <&vin>;
+    177                         pwr_sw1-supply = <&bst_out>;
+    178                         pwr_sw2-supply = <&bst_out>;
+    179 
+    180                         vddcore: buck1 {
+    181                                 regulator-name = "vddcore";
+    182                                 regulator-min-microvolt = <1200000>;
+    183                                 regulator-max-microvolt = <1350000>;
+    184                                 regulator-always-on;
+    185                                 regulator-initial-mode = <0>;
+    186                                 regulator-over-current-protection;
+    187                         };
+    188 
+    189                         vdd_ddr: buck2 {
+    190                                 regulator-name = "vdd_ddr";
+    191                                 regulator-min-microvolt = <1350000>;
+    192                                 regulator-max-microvolt = <1350000>;
+    193                                 regulator-always-on;
+    194                                 regulator-initial-mode = <0>;
+    195                                 regulator-over-current-protection;
+    196                         };
+    197 
+    198                         vdd: buck3 {
+    199                                 regulator-name = "vdd";
+    200                                 regulator-min-microvolt = <3300000>;
+    201                                 regulator-max-microvolt = <3300000>;
+    202                                 regulator-always-on;
+    203                                 st,mask-reset;
+    204                                 regulator-initial-mode = <0>;
+    205                                 regulator-over-current-protection;
+    206                         };
+    207 
+    208                         v3v3: buck4 {
+    209                                 regulator-name = "v3v3";
+    210                                 regulator-min-microvolt = <3300000>;
+    211                                 regulator-max-microvolt = <3300000>;
+    212                                 regulator-always-on;
+    213                                 regulator-over-current-protection;
+    214                                 regulator-initial-mode = <0>;
+    215                         };
+    216 
+    217                         vdda: ldo1 {
+    218                                 regulator-name = "vdda";
+    219                                 regulator-min-microvolt = <2900000>;
+    220                                 regulator-max-microvolt = <2900000>;
+    221                                 interrupts = <IT_CURLIM_LDO1 0>;
+    222                         };
+    223 
+    224                         v2v8: ldo2 {
+    225                                 regulator-name = "v2v8";
+    226                                 regulator-min-microvolt = <2800000>;
+    227                                 regulator-max-microvolt = <2800000>;
+    228                                 interrupts = <IT_CURLIM_LDO2 0>;
+    229                         };
+    230 
+    231                         vtt_ddr: ldo3 {
+    232                                 regulator-name = "vtt_ddr";
+    233                                 regulator-min-microvolt = <500000>;
+    234                                 regulator-max-microvolt = <750000>;
+    235                                 regulator-always-on;
+    236                                 regulator-over-current-protection;
+    237                         };
+    238 
+    239                         vdd_usb: ldo4 {
+    240                                 regulator-name = "vdd_usb";
+    241                                 regulator-min-microvolt = <3300000>;
+    242                                 regulator-max-microvolt = <3300000>;
+    243                                 interrupts = <IT_CURLIM_LDO4 0>;
+    244                                 regulator-always-on;
+    245                         };
+    246 
+    247                         vdd_sd: ldo5 {
+    248                                 regulator-name = "vdd_sd";
+    249                                 regulator-min-microvolt = <2900000>;
+    250                                 regulator-max-microvolt = <2900000>;
+    251                                 interrupts = <IT_CURLIM_LDO5 0>;
+    252                                 regulator-boot-on;
+    253                         };
+    254 
+    255                         v1v8: ldo6 {
+    256                                 regulator-name = "v1v8";
+    257                                 regulator-min-microvolt = <1800000>;
+    258                                 regulator-max-microvolt = <1800000>;
+    259                                 interrupts = <IT_CURLIM_LDO6 0>;
+    260                         };
+    261 
+    262                         vref_ddr: vref_ddr {
+    263                                 regulator-name = "vref_ddr";
+    264                                 regulator-always-on;
+    265                                 regulator-over-current-protection;
+    266                         };
+    267 
+    268                         bst_out: boost {
+    269                                 regulator-name = "bst_out";
+    270                                 interrupts = <IT_OCP_BOOST 0>;
+    271                         };
+    272 
+    273                         vbus_otg: pwr_sw1 {
+    274                                 regulator-name = "vbus_otg";
+    275                                 interrupts = <IT_OCP_OTG 0>;
+    276                          };
+    277 
+    278                          vbus_sw: pwr_sw2 {
+    279                                 regulator-name = "vbus_sw";
+    280                                 interrupts = <IT_OCP_SWOUT 0>;
+    281                                 regulator-active-discharge = <1>;
+    282                          };
+    283                 };
+    284 
+    285                 onkey {
+    286                         compatible = "st,stpmic1-onkey";
+    287                         interrupts = <IT_PONKEY_F 0>, <IT_PONKEY_R 0>;
+    288                         interrupt-names = "onkey-falling", "onkey-rising";
+    289                         power-off-time-sec = <10>;
+    290                         status = "okay";
+    291                 };
+    292 
+    293                 watchdog {
+    294                         compatible = "st,stpmic1-wdt";
+    295                         status = "disabled";
+    296                 };
+    297         };
+    298 };
+	
+	第四部分：删除 58~79 行的 led 和 sd_switch 节点信息 一共22行
+	 58         led {
+     59                 compatible = "gpio-leds";
+     60                 blue {
+     61                         label = "heartbeat";
+     62                         gpios = <&gpiod 9 GPIO_ACTIVE_HIGH>;
+     63                         linux,default-trigger = "heartbeat";
+     64                         default-state = "off";
+     65                 };
+     66         };
+     67 
+     68         sd_switch: regulator-sd_switch {
+     69                 compatible = "regulator-gpio";
+     70                 regulator-name = "sd_switch";
+     71                 regulator-min-microvolt = <1800000>;
+     72                 regulator-max-microvolt = <2900000>;
+     73                 regulator-type = "voltage";
+     74                 regulator-always-on;
+     75 
+     76                 gpios = <&gpiof 14 GPIO_ACTIVE_HIGH>;
+     77                 gpios-states = <0>;
+     78                 states = <1800000 0x1 2900000 0x0>;
+     79         };
+
+
+3.4. vi stm32mp157d-atk.dtsi # 根节点‘/’下添加自己的电源管理配置
+  将下面的代码添加到图 13.2.3.3 中的 58 行处：
+	vddcore: regulator-vddcore { 
+		compatible = "regulator-fixed"; 
+		regulator-name = "vddcore"; 
+		regulator-min-microvolt = <1200000>; 
+		regulator-max-microvolt = <1350000>; 
+		regulator-always-on; 
+		regulator-boot-on; 
+	}; 
+	
+	v3v3: regulator-3p3v { 
+		compatible = "regulator-fixed"; 
+		regulator-name = "v3v3"; 
+		regulator-min-microvolt = <3300000>; 
+		regulator-max-microvolt = <3300000>; 
+		regulator-always-on; 
+		regulator-boot-on; 
+	}; 
+	
+	v1v8_audio: regulator-v1v8-audio { 
+		compatible = "regulator-fixed"; 
+		regulator-name = "v1v8_audio"; 
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>; 
+		regulator-always-on; 
+		regulator-boot-on; 
+	}; 
+	
+	vdd: regulator-vdd { 
+		compatible = "regulator-fixed"; 
+		regulator-name = "vdd"; 
+		regulator-min-microvolt = <3300000>; 
+		regulator-max-microvolt = <3300000>; 
+		regulator-always-on; 
+		regulator-boot-on; 
+	}; 
+	
+	vdd_usb: regulator-vdd-usb { 
+		compatible = "regulator-fixed"; 
+		regulator-name = "vdd_usb"; 
+		regulator-min-microvolt = <3300000>; 
+		regulator-max-microvolt = <3300000>; 
+		regulator-always-on; 
+		regulator-boot-on; 
+	}; 
+    上述代码定义了 5 个电源节点，分别为：vddcore、v3v3、v1v8_audio、vdd 和 vdd_usb，至此，电源管理相关配置已经设置好了。 
+
+3.5. 修改 TF 卡和 EMMC 配置
+    vi stm32mp157d-atk.dtsi
+	169gg 36dd  # 一共36行dd
+	找到 sdmmc1 和 sdmmc2 这两个节点，将这两个节点，改为如下所示内容：
+&sdmmc1 { 
+	pinctrl-names = "default", "opendrain", "sleep"; 
+	pinctrl-0 = <&sdmmc1_b4_pins_a>; 
+	pinctrl-1 = <&sdmmc1_b4_od_pins_a>; 
+	pinctrl-2 = <&sdmmc1_b4_sleep_pins_a>; 
+	st,neg-edge; 
+	broken-cd; 
+	bus-width = <4>; 
+	vmmc-supply = <&v3v3>; 
+	status = "okay"; 
+};
+
+&sdmmc2 { 
+	pinctrl-names = "default", "opendrain", "sleep"; 
+	pinctrl-0 = <&sdmmc2_b4_pins_a &sdmmc2_d47_pins_a>; 
+	pinctrl-1 = <&sdmmc2_b4_od_pins_a &sdmmc2_d47_pins_a>; 
+	pinctrl-2 = <&sdmmc2_b4_sleep_pins_a &sdmmc2_d47_sleep_pins_a>; 
+	non-removable; 
+	st,neg-edge; 
+	bus-width = <8>; 
+	vmmc-supply = <&v3v3>; 
+	keep-power-in-suspend; 
+	status = "okay"; 
+};
+	
+3.6. 网络设备树的修改 
+  vi stm32mp157d-atk.dtsi
+  将如下所示的 ethernet0 节点信息追加到最后一行的后面：
+&ethernet0 { 
+	status = "okay"; 
+	pinctrl-0 = <&ethernet0_rgmii_pins_a>; 
+	pinctrl-1 = <&ethernet0_rgmii_pins_sleep_a>; 
+	pinctrl-names = "default", "sleep"; 
+	phy-mode = "rgmii-id"; 
+	max-speed = <1000>; 
+	phy-handle = <&phy0>; 
+	
+	mdio0 { 
+		#address-cells = <1>; 
+		#size-cells = <0>; 
+		compatible = "snps,dwmac-mdio"; 
+		phy0: ethernet-phy@0 { 
+			reg = <0>; 
+		}; 
+	}; 
+}; 
+
+3.7 网络驱动修改
+我使用的正点原子的开发板版本是V1.5，因此需要修改。
+正点原子 V1.3 及以后版本的核心板开始将网络 PHY 芯片更换为了国产裕太电子的 YT8511，所以需要修改一下驱动。YT8511 驱动源码以及修改方法已经放到了开发板光盘中，路径为：1、程序源码→8、模块驱动源码→1、YT8511 驱动源码→uboot 下修改方法→phy.c。phy.c 是正点原子修改后支持 YT8511，此文件同时支持 RTL8211 以及 YT8511。用修改后的 phy.c 文件替换掉 uboot 下的/drivers/net/phy/phy.c 文件即可，设备树无需做任何修改，直接编译即可。 
+
+3.8 vi stm32mp157d-atk.dtsi
+屏蔽 &usbotg_hs 节点
+222 /*&usbotg_hs {
+223         vbus-supply = <&vbus_otg>;
+224 };*/
+此节点定义了 USB_OTG 的电源配置，ST 官方开发板的 USB_OTG 电源也是通过 PMIC 配置的，所以 USB_OTG 电源配置也要修改，但是这里我们要先测试一下当前修改后的 uboot 能不能运行，因此先不改 USB_OTG 电源，所以先将 usbotg_hs 节点屏蔽掉，防止编译报错。
+
+3.9 在编译 uboot 之前要先让编译器知道我们要编译哪个设备树文件，打开 arch/arm/dts/Makefile 文件，找到“dtb-$(CONFIG_STM32MP15x)”配置项，然后在此配置项中加入“stm32mp157d-atk.dtb”，添加完以后如图 13.2.5.2 所示： 
+vi arch/arm/dts/Makefile
+在 dtb-$(CONFIG_STM32MP15x) 配置项里追加：
+stm32mp157d-atk.dtb
+
+3.10 在 uboot 源码根目录下新建一个名为 stm32mp157d_alientek.sh 的 shell 脚本，用于快速构建，其内容如下：
+# !/bin/bash 
+# 正点原子自定义的构建uboot的脚本，用于快速构建。
+
+make distclean
+make stm32mp15_atk_trusted_defconfig
+make DEVICE_TREE=stm32mp157d-atk all -j4
+
+3.11 创建完编译脚本后，赋予其执行权限
+chmod 777 stm32mp157d_alientek.sh     //给予可执行权限，一次即可 
+
+3.12 开始编译，直接执行编译就脚本文件： ./stm32mp157d_alientek.sh
+编译正常
+  SHIPPED dts/dt.dtb
+  FDTGREP dts/dt-spl.dtb
+  CAT     u-boot-dtb.bin
+  COPY    u-boot.dtb
+  COPY    u-boot.bin
+  MKIMAGE u-boot.stm32
+  CFGCHK  u-boot.cfg
+编译结束后，生成的 u-boot.stm32 文件，就是我们需要烧写的镜像文件。
+
+3.13  USB OTG 设备树修改 
+添加 usb_phy_tuning 子节点
+vi stm32mp157d-atk.dtsi
+在根节点“/”下添加名为“usb_phy_tuning”的子节点，节点内容如下：
+正点原子设定的具体位置：line 58 vddcore: regulator-vddcore 节点上面：
+	usb_phy_tuning: usb-phy-tuning { 
+		st,hs-dc-level = <2>; 
+		st,fs-rftime-tuning; 
+		st,hs-rftime-reduction; 
+		st,hs-current-trim = <15>; 
+		st,hs-impedance-trim = <1>; 
+		st,squelch-level = <3>; 
+		st,hs-rx-offset = <2>; 
+		st,no-lsfs-sc; 
+	};
+	
+vi  stm32mp157d-atk.dtsi
+将如下内容添加到 stm32mp157d-atk.dtsi 的最后面：
+&i2c1 { 
+	pinctrl-names = "default", "sleep"; 
+	pinctrl-0 = <&i2c1_pins_a>; 
+	pinctrl-1 = <&i2c1_pins_sleep_a>; 
+	i2c-scl-rising-time-ns = <100>; 
+	i2c-scl-falling-time-ns = <7>; 
+	status = "okay"; 
+	/delete-property/dmas; 
+	/delete-property/dma-names; 
+	
+	stusb1600@28 { 
+		compatible = "st,stusb1600"; 
+		reg = <0x28>; 
+		interrupts = <2 IRQ_TYPE_EDGE_FALLING>; 
+		interrupt-parent = <&gpiog>; 
+		pinctrl-names = "default"; 
+		pinctrl-0 = <&stusb1600_pins_a>; 
+		status = "okay"; 
+		vdd-supply = <&vin>; 
+	
+		connector { 
+			compatible = "usb-c-connector"; 
+			label = "USB-C"; 
+			power-role = "dual"; 
+			power-opmode = "default"; 
+	
+			port { 
+				con_usbotg_hs_ep: endpoint { 
+					remote-endpoint = <&usbotg_hs_ep>; 
+				}; 
+			}; 
+		}; 
+	}; 
+}; 
+
+继续向 stm32mp157d-atk.dtsi 文件添加 USB 接口相关节点内容，内容如下： 
+添加位置：在&usbphyc_port0节点上面。
+&usbh_ehci { 
+	phys = <&usbphyc_port0>; 
+	status = "okay"; 
+}; 
+ 
+&usbotg_hs { 
+	phys = <&usbphyc_port1 0>; 
+	phy-names = "usb2-phy"; 
+	usb-role-switch; 
+	status = "okay"; 
+	
+	port { 
+		usbotg_hs_ep: endpoint { 
+			remote-endpoint = <&con_usbotg_hs_ep>; 
+		}; 
+	}; 
+}; 
+ 
+&usbphyc { 
+	status = "okay"; 
+};
+
+在 stm32mp157d-atk-u-boot.dtsi 文件中添加 usbotg_hs 节点
+添加位置：文件的最后一行，追加新的节点
+vi stm32mp157d-atk-u-boot.dtsi
+&usbotg_hs { 
+	u-boot,force-b-session-valid; 
+	hnp-srp-disable; 
+	/* TEMP: force peripheral for USB OTG */ 
+	dr_mode = "peripheral"; 
+}; 
+
+
+
+13.2.8  使能 boot 和 bootd 命令 
+ST 官方 uboot 默认并没有使能 boot 和 bootd 这两个命令
+vi include/configs/stm32mp1.h , 新增如下一行：
+Line259： #define CONFIG_CMD_BOOTD    /* 使能 boot 和 bootd 命令 */
+
+
+现在只剩下LCD驱动没有适配，因为没有显示屏，所以不做了。
+按照正点原子的指导手册，这里uboot已经移植完毕。
+
+
+
+
+
+

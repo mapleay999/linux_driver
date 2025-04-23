@@ -1,18 +1,17 @@
-
 #ifndef __CHRDEV_H__
 #define __CHRDEV_H__
 
 #define DEVICE_NAME "mapleay-chrdev-device"
 #define CLASS_NAME  "mapleay-chrdev-class"
-#define MINOR_BASE  0     /* æ¬¡è®¾å¤‡å·èµ·å§‹ç¼–å·ä¸º 0 */
-#define MINOR_COUNT 1     /* æ¬¡è®¾å¤‡å·çš„æ•°é‡ä¸º 1   */
-#define BUF_SIZE    1024  /* å†…æ ¸ç¼“å†²åŒºå¤§å°       */
+#define MINOR_BASE  0     /* ´ÎÉè±¸ºÅÆğÊ¼±àºÅÎª 0 */
+#define MINOR_COUNT 1     /* ´ÎÉè±¸ºÅµÄÊıÁ¿Îª 1   */
+#define BUF_SIZE    1024  /* ÄÚºË»º³åÇø´óĞ¡       */
 
-/* å­—ç¬¦è®¾å¤‡çš„è‡ªå®šä¹‰ç§æœ‰æ•°æ®ç»“æ„ */
+/* ×Ö·ûÉè±¸µÄ×Ô¶¨ÒåË½ÓĞÊı¾İ½á¹¹ */
 struct cdev_private_data_t {
-    char   *buffer;         /* å†…æ ¸ç¼“å†²åŒº */
-    size_t buf_size;       /* ç¼“å†²åŒºå¤§å°: å†™ä¾æ®æ­¤å˜é‡  */
-    size_t data_len;       /* å½“å‰æ•°æ®é•¿åº¦ï¼šè¯»ä¾æ®æ­¤å˜é‡ */
+    char   *buffer;         /* ÄÚºË»º³åÇø */
+    size_t buf_size;       /* »º³åÇø´óĞ¡: Ğ´ÒÀ¾İ´Ë±äÁ¿  */
+    size_t data_len;       /* µ±Ç°Êı¾İ³¤¶È£º¶ÁÒÀ¾İ´Ë±äÁ¿ */
 };
 
 typedef struct chrdev_object {
@@ -21,7 +20,7 @@ typedef struct chrdev_object {
     struct device *dev_device;
     struct cdev_private_data_t dev_data;
     dev_t  dev_num;
-	struct device_node *nd;  /* è®¾å¤‡èŠ‚ç‚¹ 2025å¹´4æœˆ17æ—¥15:04:27 */
+	struct device_node *nd;  /* Éè±¸½Úµã 2025Äê4ÔÂ17ÈÕ15:04:27 */
 }chrdev_t;
 
 #endif

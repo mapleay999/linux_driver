@@ -1,0 +1,1748 @@
+
+# u-boot-stm32mp-2020.01$ make stm32mp15_trusted_defconfig -p > log.txt 生成的如下内容：
+  HOSTCC  scripts/basic/fixdep
+
+
+
+cc-cross-prefix = $(word 1, $(foreach c,$(1), $(shell set -e; if (which $(strip $(c))$(CC)) > /dev/null 2>&1 ; then echo $(c); fi)))
+GNUMAKEFLAGS := 
+quiet = quiet_
+?F = $(notdir $?)
+<D = $(patsubst %/,%,$(dir $<))
+cmd_lzma = (cat $(filter-out FORCE,$^) | lzma -9 && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+DESKTOP_SESSION = ubuntu
+quiet_cmd_flex = LEX     $@
+.SHELLFLAGS := -c
+SPL_ := 
+quiet_modtag := $(subst ,,   )
+PATCHLEVEL = 01
+lib-y := 
+XDG_SESSION_TYPE = x11
+quiet_cmd_cc_symtypes_c = SYM $(quiet_modtag) $@
+subdir-obj-y := 
+HOST_ARCH_X86 = 0x0386
+quiet_cmd_host-cxxmulti = HOSTLD  $@
+PYTHON3 = python3
+OBJCOPY = arm-none-linux-gnueabihf-objcopy
+obj-y := 
+filechk = 	$(Q)set -e; $(kecho) '  CHK     $@'; mkdir -p $(dir $@); $(filechk_$(1)) < $< > $@.tmp; if [ -r $@ ] && cmp -s $@ $@.tmp; then rm -f $@.tmp; else $(kecho) '  UPD     $@'; mv -f $@.tmp $@; fi
+cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $<
+MKIMAGE := ./scripts/mkuboot.sh
+subdir-ccflags-y := 
+@D = $(patsubst %/,%,$(dir $@))
+XAUTHORITY = /run/user/1000/gdm/Xauthority
+GDMSESSION = ubuntu
+XMODIFIERS = @im=none
+UBOOTINCLUDE = 
+CURDIR := /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01
+ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
+SHELL = /bin/sh
+NM = arm-none-linux-gnueabihf-nm
+Q = @
+VTE_VERSION = 5202
+cmd_xzkern = (cat $(filter-out FORCE,$^) | sh $(srctree)/scripts/xz_wrap.sh && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+quiet_kecho := echo
+PHONY := __build  FORCE
+MODVERDIR = .tmp_versions
+cmd_S_ttf = ( echo '.section .rodata.ttf.init,"a"'; echo '.balign 16'; echo '.global __ttf_$(*F)_begin'; echo '__ttf_$(*F)_begin:'; echo '.incbin "$<" '; echo '__ttf_$(*F)_end:'; echo '.global __ttf_$(*F)_end'; echo '.balign 16'; ) > $@
+_ = /usr/bin/make
+HOST_ARCH_AARCH64 = 0xaa64
+quiet_cmd_link_multi-m = LD [M]  $@
+subdir-m := $(subst ,, )
+a_flags = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(UBOOTINCLUDE) $(__a_flags) $(modkern_aflags)
+subdir-asflags-y := 
+?D = $(patsubst %/,%,$(dir $?))
+cc-fullversion = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh -p $(CC))
+quiet_cmd_efi_objcopy = OBJCOPY $@
+UIMAGE_ENTRYADDR = $(UIMAGE_LOADADDR)
+XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+size_append = printf $(shell dec_size=0; for F in $1; do fsize=$$(stat -c "%s" $$F); dec_size=$$(expr $$dec_size + $$fsize); done; printf "%08x\n" $$dec_size | sed 's/\(..\)/\1 /g' | { read ch0 ch1 ch2 ch3; for ch in $$ch3 $$ch2 $$ch1 $$ch0; do printf '%s%03o' '\\' $$((0x$$ch)); done; } )
+u_boot_dtsi_options_raw = $(warning Automatic .dtsi inclusion: options: $(dir $<)$(basename $(notdir $<))-u-boot.dtsi $(dir $<)$(subst $\",,$(CONFIG_SYS_SOC))-u-boot.dtsi $(dir $<)$(subst $\",,$(CONFIG_SYS_CPU))-u-boot.dtsi $(dir $<)$(subst $\",,$(CONFIG_SYS_VENDOR))-u-boot.dtsi $(dir $<)u-boot.dtsi ... found: $(if $(u_boot_dtsi_options),"$(u_boot_dtsi_options)",nothing!))
+BOARDDIR = 
+multi_depend = $(foreach m, $(notdir $1), $(eval $(obj)/$m: $(addprefix $(obj)/, $(foreach s, $3, $($(m:%$(strip $2)=%$(s)))))))
+quiet_cmd_ld = LD      $@
+real-objs-m := 
+MAKEFILE_LIST :=  scripts/Makefile.build scripts/Makefile.uncmd_spl scripts/Kbuild.include scripts/basic/Makefile scripts/Makefile.lib scripts/Makefile.host
+UIMAGE_TYPE = kernel
+CHECKFLAGS = -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ -Wbitwise -Wno-return-void -D__CHECK_ENDIAN__ 
+@F = $(notdir $@)
+_cpp_flags = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(@F))
+host-cxxobjs := 
+prefix := .
+IM_CONFIG_PHASE = 2
+ASL_TMP = $(patsubst %.c,%.asl.tmp,$@)
+host-objdirs := 
+USERNAME = ericedward
+srctree = .
+HOSTCC = cc
+host-cobjs := 
+XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+quiet_cmd_acpi_c_asl = ASL     $<
+quiet_cmd_host-csingle = HOSTCC  $@
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+VERSION = 2020
+CC = arm-none-linux-gnueabihf-gcc
+dtc_cpp_flags = -Wp,-MD,$(depfile).pre.tmp -nostdinc -I$(srctree)/arch/$(ARCH)/dts -I$(srctree)/arch/$(ARCH)/dts/include -Iinclude -I$(srctree)/include -I$(srctree)/arch/$(ARCH)/include -include $(srctree)/include/linux/kconfig.h -D__ASSEMBLY__ -undef -D__DTS__
+c_flags = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(UBOOTINCLUDE) $(__c_flags) $(modkern_cflags) -D"KBUILD_STR(s)=#s" $(basename_flags) $(modname_flags)
+cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
+LC_COLLATE = C
+host-cmulti := 
+AWK = awk
+KBUILD_AFLAGS = -D__ASSEMBLY__ -fno-PIE
+quiet_cmd_as_o_S = AS $(quiet_modtag)  $@
+dot-target = $(dir $@).$(notdir $@)
+multi-used-y := 
+__hostc_flags = $(_hostc_flags)
+CLUTTER_IM_MODULE = xim
+squote := '
+LESSOPEN = | /usr/bin/lesspipe %s
+CPP = arm-none-linux-gnueabihf-gcc -E
+single-used-m := 
+quiet_cmd_host-cxxobjs = HOSTCXX $@
+_dummy := 
+cc-option-yn = $(call try-run, $(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
+KBUILD_BUILTIN = 1
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin:/usr/local/java/jre1.8.0_271/bin
+flags = $(foreach o,$($(1)),$(if $(filter -I%,$(o)),$(call addtree,$(o)),$(o)))
+LD = arm-none-linux-gnueabihf-ld.bfd
+HOST_ARCH_ARM = 0x00a7
+clean := -f ./scripts/Makefile.clean obj
+HOSTLDFLAGS = 
+GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
+YACC = bison
+SESSION_MANAGER = local/ubuntu:@/tmp/.ICE-unix/1663,unix/ubuntu:/tmp/.ICE-unix/1663
+space := $(subst ,, )
+XDG_RUNTIME_DIR = /run/user/1000
+hdr-inst := -f ./scripts/Makefile.headersinst obj
+pound := #
+TEXTDOMAIN = im-config
+always := scripts/basic/fixdep
+rule_cc_o_c = 	$(call echo-cmd,checksrc) $(cmd_checksrc) $(call echo-cmd,cc_o_c) $(cmd_cc_o_c); $(cmd_modversions) $(call echo-cmd,record_mcount) $(cmd_record_mcount) scripts/basic/fixdep $(depfile) $@ '$(call make-cmd,cc_o_c)' > $(dot-target).tmp; rm -f $(depfile); mv -f $(dot-target).tmp $(dot-target).cmd
+quiet_cmd_lz4 = LZ4     $@
+VENDOR = 
+quiet_cmd_bzip2 = BZIP2   $@
+quiet_cmd_host-cmulti = HOSTLD  $@
+try-run = $(shell set -e; TMP="$(TMPOUT).$$$$.tmp"; TMPO="$(TMPOUT).$$$$.o"; TMPSU="$(TMPOUT).$$$$.su"; if ($(1)) >/dev/null 2>&1; then echo "$(2)"; else echo "$(3)"; fi; rm -f "$$TMP" "$$TMPO" "$$TMPSU")
+quiet_cmd_link_multi-y = LD      $@
+cmd_bison = $(YACC) -o$@ -t -l $<
+comma := ,
+any-prereq = $(filter-out $(PHONY),$?) $(filter-out $(PHONY) $(wildcard $^),$^)
+cc-ifversion = $(shell [ $(cc-version) $(1) $(2) ] && echo $(3) || echo $(4))
+subdir-ym := 
+VPATH = .
+quiet_cmd_cc_lst_c = MKLST   $@
+__hostcxx_flags = $(_hostcxx_flags)
+AR = arm-none-linux-gnueabihf-ar
+XDG_MENU_PREFIX = gnome-
+cmd_cpp_lds_S = $(CPP) $(cpp_flags) -P -C -U$(ARCH) -D__ASSEMBLY__ -DLINKER_SCRIPT -o $@ $<
+LC_NUMERIC = C
+ar-option = $(call try-run, $(AR) rc$(1) "$$TMP",$(1),$(2))
+__a_flags = $(_a_flags)
+LDFLAGS = 
+build := -f ./scripts/Makefile.build obj
+cmd_cc_lst_c = $(CC) $(c_flags) -g -c -o $*.o $< && $(CONFIG_SHELL) $(srctree)/scripts/makelst $*.o System.map $(OBJDUMP) > $@
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+basename_flags = -D"KBUILD_BASENAME=KBUILD_STR($(call name-fix,$(basetarget)))"
+objtree = .
+cc-disable-warning = $(call try-run, $(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+XDG_SESSION_DESKTOP = ubuntu
+SUBLEVEL = 
+SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+quiet_cmd_bison_h = YACC    $@
+%F = $(notdir $%)
+cmd_flex = $(LEX) -o$@ -L $<
+quiet_cmd_dtc = DTC     $@
+DISPLAY = :0
+dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+u_boot_dtsi_options = $(strip $(wildcard $(dir $<)$(basename $(notdir $<))-u-boot.dtsi) $(wildcard $(dir $<)$(subst $\",,$(CONFIG_SYS_SOC))-u-boot.dtsi) $(wildcard $(dir $<)$(subst $\",,$(CONFIG_SYS_CPU))-u-boot.dtsi) $(wildcard $(dir $<)$(subst $\",,$(CONFIG_SYS_VENDOR))-u-boot.dtsi) $(wildcard $(dir $<)u-boot.dtsi))
+KBUILD_SUBDIR_CCFLAGS := $(subst ,, )
+intermediate_targets = $(foreach sfx, $(2), $(patsubst %$(strip $(1)),%$(sfx), $(filter %$(strip $(1)), $(targets))))
+cpp_flags = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(UBOOTINCLUDE) $(__cpp_flags)
+KBUILD_MODULES = 
+quiet_cmd_xzmisc = XZMISC  $@
+quiet_cmd_efi_ld = LD      $@
+HOSTCXX = c++
+quiet_cmd_asn1_compiler = ASN.1   $@
+cmd_cc_symtypes_c = set -e; $(call cmd_gensymtypes,true,$@) >/dev/null; test -s $@ || rm -f $@
+GTK_IM_MODULE = xim
+cmd_host-cxxmulti = $(HOSTCXX) $(HOSTLDFLAGS) -o $@ $(foreach o,objs cxxobjs, $(addprefix $(obj)/,$($(@F)-$(o)))) $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+cmd_gensymtypes = $(CPP) -D__GENKSYMS__ $(c_flags) $< | $(GENKSYMS) $(if $(1), -T $(2)) $(patsubst y,-s _,$(CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX)) $(if $(KBUILD_PRESERVE),-p) -r $(firstword $(wildcard $(2:.symtypes=.symref) /dev/null))
+modorder-cmds = $(foreach m, $(modorder), $(if $(filter %/modules.order, $m), cat $m;, echo kernel/$m;))
+extra-y := 
+quiet_cmd_gzip = GZIP    $@
+PWD = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01
+cc-ldoption = $(call try-run, $(CC) $(1) -nostdlib -x c /dev/null -o "$$TMP",$(1),$(2))
+quiet_cmd_cc_s_c = CC $(quiet_modtag)  $@
+OBJCOPYFLAGS = 
+src := scripts/basic
+HOST_ARCH_RISCV32 = 0x5032
+XDG_SEAT = seat0
+quiet_cmd_lzo = LZO     $@
+SSH_AGENT_PID = 1736
+UIMAGE_COMPRESSION = $(if $(2),$(2),none)
+modname = $(basetarget)
+hostprogs-y := fixdep
+EXTRA_LDFLAGS := 
+multi-objs-m := 
+GTK_MODULES = gail:atk-bridge
+PYTHON = python
+multi-objs := $(subst ,, )
+cmd_fdtgrep = $(objtree)/tools/fdtgrep $(fdtgrep_props) -RT $< -n /chosen -n /config -O dtb | $(objtree)/tools/fdtgrep -r -O dtb - -o $@ -P u-boot,dm-pre-reloc -P u-boot,dm-spl -P u-boot,dm-tpl $(addprefix -P ,$(subst $\",,$(CONFIG_OF_SPL_REMOVE_PROPS)))
+_a_flags = $(filter-out $(AFLAGS_REMOVE_$(basetarget).o), $(orig_a_flags))
+cmd_efi_objcopy = $(OBJCOPY) -j .header -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel* -j .rela* -j .reloc $(if $(EFI_TARGET),$(EFI_TARGET),-O binary) $^ $@
+HOME = /home/ericedward
+UBOOTRELEASE = 
+quiet_cmd_host-cobjs = HOSTCC  $@
+as-instr = $(call try-run, printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+modbuiltin := -f ./scripts/Makefile.modbuiltin obj
+__c_flags = $(_c_flags)
+cmd_ld = $(LD) $(LDFLAGS) $(ldflags-y) $(LDFLAGS_$(@F)) $(filter-out FORCE,$^) -o $@
+LESSCLOSE = /usr/bin/lesspipe %s %s
+orig_c_flags = $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(KBUILD_SUBDIR_CCFLAGS) $(ccflags-y) $(CFLAGS_$(basetarget).o)
+cc-name = $(shell $(CC) -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)
+-*-command-variables-*- := obj=scripts/basic
+LOGNAME = ericedward
+binutils-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/binutils-version.sh $(AS))
+_hostc_flags = $(HOSTCFLAGS)   $(HOST_EXTRACFLAGS) $(HOSTCFLAGS_$(basetarget).o)
++F = $(notdir $+)
+cc-option-align = $(subst -functions=0,, $(call cc-option,-falign-functions=0,-malign-functions=0))
+lib-m := 
+kbuild-file := ./scripts/basic/Makefile
+LDR = arm-none-linux-gnueabihf-ldr
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+^D = $(patsubst %/,%,$(dir $^))
+KBUILD_VERBOSE = 0
+obj = scripts/basic
+obj-m := 
+XDG_VTNR = 2
+modname_flags = $(if $(filter 1,$(words $(modname))), -D"KBUILD_MODNAME=KBUILD_STR($(call name-fix,$(modname)))")
+host-csingle := scripts/basic/fixdep
+obj-dirs := $(subst ,, )
+MAKELEVEL := 1
+cmd_cc_i_c = $(CPP) $(c_flags)   -o $@ $<
+COLORTERM = truecolor
+MAKE = make
+modorder-target := scripts/basic/modules.order
+DTC_FLAGS = 
+QT_IM_MODULE = ibus
+KCONFIG_CONFIG = .config
+UIMAGE_IN = $<
+SHLVL = 1
+quiet_cmd_cpp_lds_S = LDS     $@
+EXTRA_AFLAGS := 
+modorder := 
+KBUILD_DEFCONFIG = sandbox_defconfig
+cmd_shipped = cat $< > $@
+silent_kecho := :
+host-shared := scripts/basic/)
+quiet_cmd_cc_i_c = CPP $(quiet_modtag) $@
+AS = arm-none-linux-gnueabihf-as
+cmd_asn1_compiler = $(objtree)/tools/asn1_compiler $< $(subst .h,.c,$@) $(subst .c,.h,$@)
+cmd_host-cxxobjs = $(HOSTCXX) $(hostcxx_flags) -c -o $@ $<
+MAKEOVERRIDES = ${-*-command-variables-*-}
+UIMAGE_OPTS-y = 
+GNOME_SHELL_SESSION_MODE = ubuntu
+XDG_SESSION_ID = 2
+USER = ericedward
+subdir-y := $(subst ,, )
+CHECK = sparse
+.DEFAULT_GOAL := __build
+XDG_CURRENT_DESKTOP = ubuntu:GNOME
+if_changed_dep = $(if $(strip $(any-prereq) $(arg-check) ), @set -e; $(echo-cmd) $(cmd_$(1)); scripts/basic/fixdep $(depfile) $@ '$(make-cmd)' > $(dot-target).tmp; rm -f $(depfile); mv -f $(dot-target).tmp $(dot-target).cmd)
+modname-multi = $(sort $(foreach m,$(multi-used), $(if $(filter $(subst $(obj)/,,$*.o), $($(m:.o=-objs)) $($(m:.o=-y))),$(m:.o=))))
+CLASSPATH = .:/usr/local/java/jre1.8.0_271/lib
+RCS_TAR_IGNORE = --exclude SCCS --exclude BitKeeper --exclude .svn --exclude CVS --exclude .pc --exclude .hg --exclude .git
+quiet_cmd_bison = YACC    $@
+real-objs-y := 
+quiet_cmd_lzma = LZMA    $@
+%D = $(patsubst %/,%,$(dir $%))
+cmd_dt_S_dtb = ( echo '.section .dtb.init.rodata,"a"'; echo '.balign 16'; echo '.global __dtb_$(subst -,_,$(*F))_begin'; echo '__dtb_$(subst -,_,$(*F))_begin:'; echo '.incbin "$<" '; echo '__dtb_$(subst -,_,$(*F))_end:'; echo '.global __dtb_$(subst -,_,$(*F))_end'; echo '.balign 16'; ) > $@
+quiet_cmd_S_ttf = TTF     $@
+CPU = 
+hostcxx_flags = -Wp,-MD,$(depfile) $(__hostcxx_flags)
+CPUDIR = 
+ld-option = $(call try-run, $(CC) -x c /dev/null -c -o "$$TMPO" ; $(LD) $(1) "$$TMPO" -o "$$TMP",$(1),$(2))
+modkern_cflags = $(if $(part-of-module), $(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE), $(KBUILD_CFLAGS_KERNEL) $(CFLAGS_KERNEL))
+cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $<
+cmd_lz4 = (cat $(filter-out FORCE,$^) | lz4c -l -c1 stdin stdout && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+u_boot_dtsi = $(strip $(u_boot_dtsi_options_debug) $(notdir $(firstword $(u_boot_dtsi_options))))
+cmd_bzip2 = (cat $(filter-out FORCE,$^) | bzip2 -9 && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+cmd_host-cmulti = $(HOSTCC) $(HOSTLDFLAGS) -o $@ $(addprefix $(obj)/,$($(@F)-objs)) $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+HOSTCFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer  -std=gnu11
+targets := 
+MAKE_COMMAND := make
+OLDPWD = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0
+NOSTDINC_FLAGS = 
+multi-used := $(subst ,, )
+.VARIABLES := 
+quiet_cmd_cc_o_c = CC $(quiet_modtag)  $@
+echo-cmd = $(if $($(quiet)cmd_$(1)), echo '  $(call escsq,$($(quiet)cmd_$(1)))$(echo-why)';)
+multi-used-m := 
+*F = $(notdir $*)
+ldflags-y := $(subst ,, )
+depfile = $(subst $(comma),_,$(dot-target).d)
+KBUILD_KCONFIG = 
+asflags-y := $(subst ,,  )
+ld-ifversion = $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
+make-cmd = $(call escsq,$(subst $(pound),$$(pound),$(subst $$,$$$$,$(cmd_$(1)))))
+LEX = flex
+ARCH = arm
+MAKEFLAGS = prR -I/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 --no-print-directory -- $(MAKEOVERRIDES)
+ccflags-y := $(subst ,,  )
+quiet_cmd_dt_S_dtb = DTB     $@
+MFLAGS = -prR -I/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 --no-print-directory
+*D = $(patsubst %/,%,$(dir $*))
+as-option = $(call try-run, $(CC) $(KBUILD_CFLAGS) $(1) -c -x assembler /dev/null -o "$$TMP",$(1),$(2))
+HOSTOS = linux
+HOSTCXXFLAGS = -O2
++D = $(patsubst %/,%,$(dir $+))
+cc-option = $(call try-run, $(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
+SOC = 
+OBJDUMP = arm-none-linux-gnueabihf-objdump
+PYTHON2 = python2
+cmd_bison_h = $(YACC) -o/dev/null --defines=$@ -t -l $<
+__cpp_flags = $(_cpp_flags)
+quiet_cmd_uimage = UIMAGE  $(UIMAGE_OUT)
+cmd_dtc = mkdir -p $(dir ${dtc-tmp}) ; (cat $<; $(if $(u_boot_dtsi),echo '$(pound)include "$(u_boot_dtsi)"')) > $(pre-tmp); $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $(pre-tmp) ; $(DTC) -O dtb -o $@ -b 0 -i $(dir $<) $(DTC_FLAGS) -d $(depfile).dtc.tmp $(dtc-tmp) ; cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile) ; sed -i "s:$(pre-tmp):$(<):" $(depfile)
+BOARD = 
+__hostprogs := scripts/basic/fixdep
+hostc_flags = -Wp,-MD,$(depfile) $(__hostc_flags)
+objectify = $(foreach o,$(1),$(if $(filter /%,$(o)),$(o),$(obj)/$(o)))
+cmd_dtco = mkdir -p $(dir ${dtc-tmp}) ; $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; $(DTC) -@ -O dtb -o $@ -b 0 -i $(dir $<) $(DTC_FLAGS) -d $(depfile).dtc.tmp $(dtc-tmp) ; cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+save-cflags := 
+cmd_as_s_S = $(CPP) $(a_flags)   -o $@ $<
+cmd_xzmisc = (cat $(filter-out FORCE,$^) | xz --check=crc32 --lzma2=dict=1MiB) > $@ || (rm -f $@ ; false)
+cmd_efi_ld = $(LD) -nostdlib -znocombreloc -T $(EFI_LDS_PATH) -shared -Bsymbolic -s $^ -o $@
+STRIP = arm-none-linux-gnueabihf-strip
+QT_ACCESSIBILITY = 1
+UIMAGE_NAME = 'Linux-$(KERNELRELEASE)'
+MKIMAGEOUTPUT = /dev/null
+DTC = ./scripts/dtc/dtc
+dtbinst := -f scripts/Makefile.dtbinst obj
+CROSS_COMPILE = arm-none-linux-gnueabihf-
+link_multi_deps = $(filter $(addprefix $(obj)/, $($(subst $(obj)/,,$(@:.o=-objs))) $($(subst $(obj)/,,$(@:.o=-y)))), $^)
+cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || (rm -f $@ ; false)
+HOST_ARCH_RISCV64 = 0x5064
+HOSTARCH = x86_64
+escsq = $(subst $(squote),'\$(squote)',$1)
+TEXTDOMAINDIR = /usr/share/locale/
+cmd_cc_s_c = $(CC) $(c_flags) $(DISABLE_LTO) -fverbose-asm -S -o $@ $<
+cmd = @$(echo-cmd) $(cmd_$(1))
+MAKEFILES := 
+cmd_link_multi-y = $(LD) $(ld_flags) -r -o $@ $(link_multi_deps) $(cmd_secanalysis)
+cmd_lzo = (cat $(filter-out FORCE,$^) | lzop -9 && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+HOST_ARCH = 0x8664
+KBUILD_SRC = 
+CONFIG_SHELL = /bin/bash
+KBUILD_SUBDIR_ASFLAGS := $(subst ,, )
+<F = $(notdir $<)
+quiet_cmd_shipped = SHIPPED $@
+cmd_acpi_c_asl = $(CPP) -x assembler-with-cpp -D__ASSEMBLY__ -P $(UBOOTINCLUDE) -o $(ASL_TMP) $< && iasl -p $@ -tc $(ASL_TMP) $(if $(KBUILD_VERBOSE:1=), >/dev/null) && mv $(patsubst %.c,%.hex,$@) $@
+modkern_aflags := $(subst ,, )
+quiet_cmd_objcopy = OBJCOPY $@
+HOST_ARCH_X86_64 = 0x8664
+cmd_uimage = $(CONFIG_SHELL) $(MKIMAGE) -A $(UIMAGE_ARCH) -O linux -C $(UIMAGE_COMPRESSION) $(UIMAGE_OPTS-y) -T $(UIMAGE_TYPE) -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) -n $(UIMAGE_NAME) -d $(UIMAGE_IN) $(UIMAGE_OUT)
+cmd_S_efi = ( echo '.section .rodata.$*.init,"a"'; echo '.balign 16'; echo '.global __efi_$*_begin'; echo '__efi_$*_begin:'; echo '.incbin "$<" '; echo '__efi_$*_end:'; echo '.global __efi_$*_end'; echo '.balign 16'; ) > $@
+KBUILD_CPPFLAGS = -D__KERNEL__ -D__UBOOT__
+__subdir-m := 
+cmd_host-cobjs = $(HOSTCC) $(hostc_flags) -c -o $@ $<
+PERL = perl
+quiet_cmd_as_s_S = CPP $(quiet_modtag) $@
+cmd_mkimage = $(objtree)/tools/mkimage $(MKIMAGEFLAGS_$(@F)) -d $< $@ >$(MKIMAGEOUTPUT) $(if $(KBUILD_VERBOSE:0=), && cat $(MKIMAGEOUTPUT))
+dtc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/dtc-version.sh $(DTC))
+quiet_cmd_mkimage = MKIMAGE $@
+UIMAGE_OUT = $@
+arg-check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) $(filter-out $(cmd_$@),   $(cmd_$(1))) )
+quiet_cmd_fdtgrep = FDTGREP $@
+ld_flags = $(LDFLAGS) $(ldflags-y)
+QT4_IM_MODULE = xim
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+KBUILD_CFLAGS = -Wall -Wstrict-prototypes -Wno-format-security -fno-builtin -ffreestanding -std=gnu11 -fshort-wchar -fno-strict-aliasing -fno-PIE
+RCS_FIND_IGNORE = \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/80f274e4_8917_44ab_88a5_de72e786c48c
+basetarget = $(basename $(notdir $@))
+^F = $(notdir $^)
+kbuild-dir := ./scripts/basic
+UIMAGE_ARCH = $(SRCARCH)
+GNOME_TERMINAL_SERVICE = :1.71
+SUFFIXES := 
+if_changed = $(if $(strip $(any-prereq) $(arg-check)), @set -e; $(echo-cmd) $(cmd_$(1)); printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd)
+cmd_link_multi-m = $(cmd_link_multi-y)
+baseprereq = $(basename $(notdir $<))
+EXTRA_CPPFLAGS := 
+addtree = $(if $(patsubst -I%,%,$(1)), $(if $(filter-out -I/%,$(1)),$(patsubst -I%,-I$(srctree)/%,$(1))) $(1))
+if_changed_rule = $(if $(strip $(any-prereq) $(arg-check) ), @set -e; $(rule_$(1)))
+cmd_files := 
+pre-tmp = $(subst $(comma),_,$(dot-target).pre.tmp)
+WINDOWPATH = 2
+_hostcxx_flags = $(HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) $(HOSTCXXFLAGS_$(basetarget).o)
+__subdir-y := 
+.INCLUDE_DIRS = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 /usr/include /usr/local/include /usr/include
+quiet_cmd_xzkern = XZKERN  $@
+_c_flags = $(filter-out $(CFLAGS_REMOVE_$(basetarget).o), $(orig_c_flags))
+GJS_DEBUG_OUTPUT = stderr
+orig_a_flags = $(KBUILD_CPPFLAGS) $(KBUILD_AFLAGS) $(KBUILD_SUBDIR_ASFLAGS) $(asflags-y) $(AFLAGS_$(basetarget).o)
+EFI_LDS_PATH = $(srctree)/arch/$(ARCH)/lib/$(EFI_LDS)
+KBUILD_EXTMOD = 
+KBUILD_CHECKSRC = 0
+fdtgrep_props := -b u-boot,dm-pre-reloc -b u-boot,dm-spl
+.RECIPEPREFIX := 
+size_check = 	actual=$( wc -c  | awk '{print $1}'); limit=$( printf "%d"  ); if test $actual -gt $limit; then echo " exceeds file size limit:" >&2; echo "  limit:  $(printf %#x $limit) bytes" >&2; echo "  actual: $(printf %#x $actual) bytes" >&2; echo "  excess: $(printf %#x $((actual - limit))) bytes" >&2; exit 1; fi
+MAKE_TERMERR = /dev/pts/0
+EXTRA_CFLAGS := 
+TMPOUT := 
+MAKE_HOST := x86_64-pc-linux-gnu
+name-fix = $(subst $(comma),_,$(subst -,_,$1))
+host-cxxmulti := 
+cppflags-y := $(subst ,,  )
+cmd_host-csingle = $(HOSTCC) $(hostc_flags) -o $@ $< $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+LANG = en_US.UTF-8
+TERM = xterm-256color
+multi-objs-y := 
+empty := 
+SPL_TPL_ := 
+quote := "
+UBOOTVERSION = 2020.01-stm32mp-r1
+kecho := echo
+quiet_cmd_dtco = DTCO    $@
+MAKE_VERSION := 4.1
+UIMAGE_LOADADDR = arch_must_set_this
+
+
+
+
+
+
+
+scripts/basic/%.lex.c: scripts/basic/%.l FORCE
+	$(call if_changed,flex)
+
+scripts/basic/%.tab.c: scripts/basic/%.y FORCE
+	$(call if_changed,bison)
+
+scripts/basic/%.tab.h: scripts/basic/%.y FORCE
+	$(call if_changed,bison_h)
+
+scripts/basic/%: scripts/basic/%_shipped
+	$(call cmd,shipped)
+
+scripts/basic/%.dtb.S: scripts/basic/%.dtb
+	$(call cmd,dt_S_dtb)
+
+scripts/basic/%.dtb: scripts/basic/%.dts FORCE
+	$(call if_changed_dep,dtc)
+
+scripts/basic/%.dtbo: scripts/basic/%.dts FORCE
+	$(call if_changed_dep,dtco)
+
+scripts/basic/%.S: scripts/basic/%.ttf
+	$(call cmd,S_ttf)
+
+scripts/basic/%_efi.S: scripts/basic/%.efi
+	$(call cmd,S_efi)
+
+scripts/basic/%.efi: scripts/basic/%_efi.so
+	$(call cmd,efi_objcopy)
+
+scripts/basic/%_efi.so: scripts/basic/%.o scripts/basic/efi_crt0.o scripts/basic/efi_reloc.o scripts/basic/efi_freestanding.o
+	$(call cmd,efi_ld)
+
+scripts/basic/%.s: scripts/basic/%.c FORCE
+	$(call if_changed_dep,cc_s_c)
+
+scripts/basic/%.i: scripts/basic/%.c FORCE
+	$(call if_changed_dep,cc_i_c)
+
+scripts/basic/%.symtypes: scripts/basic/%.c FORCE
+	$(call cmd,cc_symtypes_c)
+
+scripts/basic/%.o: scripts/basic/%.c FORCE
+	$(call cmd,force_checksrc)
+	$(call if_changed_rule,cc_o_c)
+
+scripts/basic/%.lst: scripts/basic/%.c FORCE
+	$(call if_changed_dep,cc_lst_c)
+
+scripts/basic/%.s: scripts/basic/%.S FORCE
+	$(call if_changed_dep,as_s_S)
+
+scripts/basic/%.o: scripts/basic/%.S FORCE
+	$(call if_changed_dep,as_o_S)
+
+scripts/basic/%.lds: scripts/basic/%.lds.S FORCE
+	$(call if_changed_dep,cpp_lds_S)
+
+scripts/basic/%.asn1.c scripts/basic/%.asn1.h: scripts/basic/%.asn1 tools/asn1_compiler
+	$(call cmd,asn1_compiler)
+
+
+
+FORCE:
+
+.PHONY: __build FORCE
+
+.SECONDARY:
+
+scripts/Makefile.uncmd_spl:
+
+scripts/basic/efi_reloc.o: arch/arm/lib/ FORCE
+	$(call cmd,force_checksrc)
+	$(call if_changed_rule,cc_o_c)
+
+scripts/basic/fixdep.c:
+
+.SUFFIXES:
+
+scripts/basic/dsdt.asl:
+
+scripts/basic/modules.order: FORCE
+	$(Q)(cat /dev/null; $(modorder-cmds)) > $@
+
+scripts/basic/efi_crt0.o: arch/arm/lib/ FORCE
+	$(call if_changed_dep,as_o_S)
+
+scripts/Makefile.host:
+
+.DEFAULT:
+
+__build: scripts/basic/fixdep
+	@:
+
+scripts/Makefile.lib:
+
+scripts/Makefile.build:
+
+scripts/basic/Makefile:
+
+scripts/basic/dsdt.c: scripts/basic/dsdt.asl
+	$(call cmd,acpi_c_asl)
+	$(Q)sed -i -e "s,dsdt_aml_code,AmlCode," $@
+
+include/config/auto.conf:
+
+.DELETE_ON_ERROR:
+
+scripts/Kbuild.include:
+
+scripts/basic/fixdep: scripts/basic/fixdep.c FORCE
+	$(call if_changed_dep,host-csingle)
+
+arch/arm/lib/:
+
+include/autoconf.mk:
+
+
+
+
+
+
+  HOSTCC  scripts/kconfig/conf.o
+  YACC    scripts/kconfig/zconf.tab.c
+  LEX     scripts/kconfig/zconf.lex.c
+  HOSTCC  scripts/kconfig/zconf.tab.o
+  HOSTLD  scripts/kconfig/conf
+
+
+
+cc-cross-prefix = $(word 1, $(foreach c,$(1), $(shell set -e; if (which $(strip $(c))$(CC)) > /dev/null 2>&1 ; then echo $(c); fi)))
+GNUMAKEFLAGS := 
+quiet = quiet_
+?F = $(notdir $?)
+<D = $(patsubst %/,%,$(dir $<))
+cmd_lzma = (cat $(filter-out FORCE,$^) | lzma -9 && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+DESKTOP_SESSION = ubuntu
+HOSTLOADLIBES_qconf = $(KC_QT_LIBS)
+quiet_cmd_flex = LEX     $@
+.SHELLFLAGS := -c
+SPL_ := 
+quiet_modtag := $(subst ,,   )
+PATCHLEVEL = 01
+lib-y := 
+XDG_SESSION_TYPE = x11
+quiet_cmd_cc_symtypes_c = SYM $(quiet_modtag) $@
+subdir-obj-y := 
+HOST_ARCH_X86 = 0x0386
+quiet_cmd_host-cxxmulti = HOSTLD  $@
+PYTHON3 = python3
+OBJCOPY = arm-none-linux-gnueabihf-objcopy
+obj-y := 
+gconf-objs := gconf.o zconf.tab.o
+filechk = 	$(Q)set -e; $(kecho) '  CHK     $@'; mkdir -p $(dir $@); $(filechk_$(1)) < $< > $@.tmp; if [ -r $@ ] && cmp -s $@ $@.tmp; then rm -f $@.tmp; else $(kecho) '  UPD     $@'; mv -f $@.tmp $@; fi
+cmd_cc_o_c = $(CC) $(c_flags) -c -o $@ $<
+MKIMAGE := ./scripts/mkuboot.sh
+subdir-ccflags-y := 
+@D = $(patsubst %/,%,$(dir $@))
+XAUTHORITY = /run/user/1000/gdm/Xauthority
+GDMSESSION = ubuntu
+XMODIFIERS = @im=none
+UBOOTINCLUDE = 
+CURDIR := /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01
+ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
+SHELL = /bin/sh
+NM = arm-none-linux-gnueabihf-nm
+Q = @
+VTE_VERSION = 5202
+cmd_xzkern = (cat $(filter-out FORCE,$^) | sh $(srctree)/scripts/xz_wrap.sh && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+quiet_kecho := echo
+PHONY := __build xconfig gconfig menuconfig config syncconfig update-po-config localmodconfig localyesconfig oldconfig allnoconfig allyesconfig allmodconfig alldefconfig randconfig listnewconfig olddefconfig oldnoconfig silentoldconfig savedefconfig defconfig kvmconfig xenconfig tinyconfig testconfig scripts/kconfig/dochecklxdialog  FORCE
+MODVERDIR = .tmp_versions
+cmd_S_ttf = ( echo '.section .rodata.ttf.init,"a"'; echo '.balign 16'; echo '.global __ttf_$(*F)_begin'; echo '__ttf_$(*F)_begin:'; echo '.incbin "$<" '; echo '__ttf_$(*F)_end:'; echo '.global __ttf_$(*F)_end'; echo '.balign 16'; ) > $@
+_ = /usr/bin/make
+HOST_ARCH_AARCH64 = 0xaa64
+quiet_cmd_link_multi-m = LD [M]  $@
+subdir-m := $(subst ,, )
+a_flags = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(UBOOTINCLUDE) $(__a_flags) $(modkern_aflags)
+mconf-objs := mconf.o zconf.tab.o lxdialog/checklist.o lxdialog/util.o lxdialog/inputbox.o lxdialog/textbox.o lxdialog/yesno.o lxdialog/menubox.o
+subdir-asflags-y := 
+?D = $(patsubst %/,%,$(dir $?))
+cc-fullversion = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh -p $(CC))
+quiet_cmd_efi_objcopy = OBJCOPY $@
+UIMAGE_ENTRYADDR = $(UIMAGE_LOADADDR)
+XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+size_append = printf $(shell dec_size=0; for F in $1; do fsize=$$(stat -c "%s" $$F); dec_size=$$(expr $$dec_size + $$fsize); done; printf "%08x\n" $$dec_size | sed 's/\(..\)/\1 /g' | { read ch0 ch1 ch2 ch3; for ch in $$ch3 $$ch2 $$ch1 $$ch0; do printf '%s%03o' '\\' $$((0x$$ch)); done; } )
+u_boot_dtsi_options_raw = $(warning Automatic .dtsi inclusion: options: $(dir $<)$(basename $(notdir $<))-u-boot.dtsi $(dir $<)$(subst $\",,$(CONFIG_SYS_SOC))-u-boot.dtsi $(dir $<)$(subst $\",,$(CONFIG_SYS_CPU))-u-boot.dtsi $(dir $<)$(subst $\",,$(CONFIG_SYS_VENDOR))-u-boot.dtsi $(dir $<)u-boot.dtsi ... found: $(if $(u_boot_dtsi_options),"$(u_boot_dtsi_options)",nothing!))
+BOARDDIR = 
+multi_depend = $(foreach m, $(notdir $1), $(eval $(obj)/$m: $(addprefix $(obj)/, $(foreach s, $3, $($(m:%$(strip $2)=%$(s)))))))
+quiet_cmd_ld = LD      $@
+real-objs-m := 
+MAKEFILE_LIST :=  scripts/Makefile.build scripts/Makefile.uncmd_spl scripts/Kbuild.include scripts/kconfig/Makefile scripts/Makefile.lib scripts/Makefile.host
+qconf-objs := zconf.tab.o
+UIMAGE_TYPE = kernel
+CHECKFLAGS = -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ -Wbitwise -Wno-return-void -D__CHECK_ENDIAN__ 
+@F = $(notdir $@)
+_cpp_flags = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(@F))
+host-cxxobjs := scripts/kconfig/qconf.o
+prefix := .
+IM_CONFIG_PHASE = 2
+ASL_TMP = $(patsubst %.c,%.asl.tmp,$@)
+HOSTCFLAGS_zconf.lex.o := -Iscripts/kconfig
+host-objdirs := scripts/kconfig/lxdialog/
+USERNAME = ericedward
+srctree = .
+HOSTCC = cc
+host-cobjs := scripts/kconfig/conf.o scripts/kconfig/gconf.o scripts/kconfig/kxgettext.o scripts/kconfig/lxdialog/checklist.o scripts/kconfig/lxdialog/inputbox.o scripts/kconfig/lxdialog/menubox.o scripts/kconfig/lxdialog/textbox.o scripts/kconfig/lxdialog/util.o scripts/kconfig/lxdialog/yesno.o scripts/kconfig/mconf.o scripts/kconfig/nconf.gui.o scripts/kconfig/nconf.o scripts/kconfig/zconf.tab.o
+XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+quiet_cmd_acpi_c_asl = ASL     $<
+quiet_cmd_host-csingle = HOSTCC  $@
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+VERSION = 2020
+cmd_bzip2 = (cat $(filter-out FORCE,$^) | bzip2 -9 && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+CC = arm-none-linux-gnueabihf-gcc
+dtc_cpp_flags = -Wp,-MD,$(depfile).pre.tmp -nostdinc -I$(srctree)/arch/$(ARCH)/dts -I$(srctree)/arch/$(ARCH)/dts/include -Iinclude -I$(srctree)/include -I$(srctree)/arch/$(ARCH)/include -include $(srctree)/include/linux/kconfig.h -D__ASSEMBLY__ -undef -D__DTS__
+c_flags = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(UBOOTINCLUDE) $(__c_flags) $(modkern_cflags) -D"KBUILD_STR(s)=#s" $(basename_flags) $(modname_flags)
+cmd_objcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
+LC_COLLATE = C
+host-cmulti := scripts/kconfig/conf scripts/kconfig/gconf scripts/kconfig/kxgettext scripts/kconfig/mconf scripts/kconfig/nconf
+AWK = awk
+KBUILD_AFLAGS = -D__ASSEMBLY__ -fno-PIE
+quiet_cmd_as_o_S = AS $(quiet_modtag)  $@
+dot-target = $(dir $@).$(notdir $@)
+multi-used-y := 
+__hostc_flags = $(_hostc_flags)
+CLUTTER_IM_MODULE = xim
+squote := '
+LESSOPEN = | /usr/bin/lesspipe %s
+CPP = arm-none-linux-gnueabihf-gcc -E
+single-used-m := 
+quiet_cmd_host-cxxobjs = HOSTCXX $@
+_dummy := $(subst ,, )
+qconf-cxxobjs := qconf.o
+cc-option-yn = $(call try-run, $(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
+KBUILD_BUILTIN = 1
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin:/usr/local/java/jre1.8.0_271/bin
+conf-objs := conf.o  zconf.tab.o
+flags = $(foreach o,$($(1)),$(if $(filter -I%,$(o)),$(call addtree,$(o)),$(o)))
+LD = arm-none-linux-gnueabihf-ld.bfd
+HOST_ARCH_ARM = 0x00a7
+clean := -f ./scripts/Makefile.clean obj
+HOSTLDFLAGS = 
+quiet_cmd_as_s_S = CPP $(quiet_modtag) $@
+GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
+YACC = bison
+HOSTLOADLIBES_mconf = $(shell $(CONFIG_SHELL) $(check-lxdialog) -ldflags $(HOSTCC))
+SESSION_MANAGER = local/ubuntu:@/tmp/.ICE-unix/1663,unix/ubuntu:/tmp/.ICE-unix/1663
+space := $(subst ,, )
+XDG_RUNTIME_DIR = /run/user/1000
+hdr-inst := -f ./scripts/Makefile.headersinst obj
+pound := #
+TEXTDOMAIN = im-config
+always := scripts/kconfig/dochecklxdialog
+rule_cc_o_c = 	$(call echo-cmd,checksrc) $(cmd_checksrc) $(call echo-cmd,cc_o_c) $(cmd_cc_o_c); $(cmd_modversions) $(call echo-cmd,record_mcount) $(cmd_record_mcount) scripts/basic/fixdep $(depfile) $@ '$(call make-cmd,cc_o_c)' > $(dot-target).tmp; rm -f $(depfile); mv -f $(dot-target).tmp $(dot-target).cmd
+quiet_cmd_lz4 = LZ4     $@
+VENDOR = 
+quiet_cmd_bzip2 = BZIP2   $@
+u_boot_dtsi = $(strip $(u_boot_dtsi_options_debug) $(notdir $(firstword $(u_boot_dtsi_options))))
+quiet_cmd_host-cmulti = HOSTLD  $@
+try-run = $(shell set -e; TMP="$(TMPOUT).$$$$.tmp"; TMPO="$(TMPOUT).$$$$.o"; TMPSU="$(TMPOUT).$$$$.su"; if ($(1)) >/dev/null 2>&1; then echo "$(2)"; else echo "$(3)"; fi; rm -f "$$TMP" "$$TMPO" "$$TMPSU")
+quiet_cmd_moc = MOC     $@
+quiet_cmd_link_multi-y = LD      $@
+cmd_bison = $(YACC) -o$@ -t -l $<
+comma := ,
+any-prereq = $(filter-out $(PHONY),$?) $(filter-out $(PHONY) $(wildcard $^),$^)
+cc-ifversion = $(shell [ $(cc-version) $(1) $(2) ] && echo $(3) || echo $(4))
+subdir-ym := 
+VPATH = .
+quiet_cmd_cc_lst_c = MKLST   $@
+__hostcxx_flags = $(_hostcxx_flags)
+AR = arm-none-linux-gnueabihf-ar
+XDG_MENU_PREFIX = gnome-
+nconf-objs := nconf.o zconf.tab.o nconf.gui.o
+LC_NUMERIC = C
+ar-option = $(call try-run, $(AR) rc$(1) "$$TMP",$(1),$(2))
+__a_flags = $(_a_flags)
+LDFLAGS = 
+build := -f ./scripts/Makefile.build obj
+cmd_cc_lst_c = $(CC) $(c_flags) -g -c -o $*.o $< && $(CONFIG_SHELL) $(srctree)/scripts/makelst $*.o System.map $(OBJDUMP) > $@
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+basename_flags = -D"KBUILD_BASENAME=KBUILD_STR($(call name-fix,$(basetarget)))"
+simple-targets := oldconfig allnoconfig allyesconfig allmodconfig alldefconfig randconfig listnewconfig olddefconfig
+objtree = .
+cc-disable-warning = $(call try-run, $(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+XDG_SESSION_DESKTOP = ubuntu
+SUBLEVEL = 
+SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+quiet_cmd_bison_h = YACC    $@
+%F = $(notdir $%)
+cmd_flex = $(LEX) -o$@ -L $<
+quiet_cmd_dtc = DTC     $@
+DISPLAY = :0
+dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
+u_boot_dtsi_options = $(strip $(wildcard $(dir $<)$(basename $(notdir $<))-u-boot.dtsi) $(wildcard $(dir $<)$(subst $\",,$(CONFIG_SYS_SOC))-u-boot.dtsi) $(wildcard $(dir $<)$(subst $\",,$(CONFIG_SYS_CPU))-u-boot.dtsi) $(wildcard $(dir $<)$(subst $\",,$(CONFIG_SYS_VENDOR))-u-boot.dtsi) $(wildcard $(dir $<)u-boot.dtsi))
+KBUILD_SUBDIR_CCFLAGS := $(subst ,, )
+intermediate_targets = $(foreach sfx, $(2), $(patsubst %$(strip $(1)),%$(sfx), $(filter %$(strip $(1)), $(targets))))
+cpp_flags = -Wp,-MD,$(depfile) $(NOSTDINC_FLAGS) $(UBOOTINCLUDE) $(__cpp_flags)
+KBUILD_MODULES = 
+quiet_cmd_xzmisc = XZMISC  $@
+quiet_cmd_efi_ld = LD      $@
+HOSTCFLAGS_gconf.o = `pkg-config --cflags gtk+-2.0 gmodule-2.0 libglade-2.0` -Wno-missing-prototypes
+HOSTCXX = c++
+quiet_cmd_asn1_compiler = ASN.1   $@
+cmd_cc_symtypes_c = set -e; $(call cmd_gensymtypes,true,$@) >/dev/null; test -s $@ || rm -f $@
+GTK_IM_MODULE = xim
+cmd_host-cxxmulti = $(HOSTCXX) $(HOSTLDFLAGS) -o $@ $(foreach o,objs cxxobjs, $(addprefix $(obj)/,$($(@F)-$(o)))) $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+cmd_gensymtypes = $(CPP) -D__GENKSYMS__ $(c_flags) $< | $(GENKSYMS) $(if $(1), -T $(2)) $(patsubst y,-s _,$(CONFIG_HAVE_UNDERSCORE_SYMBOL_PREFIX)) $(if $(KBUILD_PRESERVE),-p) -r $(firstword $(wildcard $(2:.symtypes=.symref) /dev/null))
+modorder-cmds = $(foreach m, $(modorder), $(if $(filter %/modules.order, $m), cat $m;, echo kernel/$m;))
+extra-y := 
+quiet_cmd_gzip = GZIP    $@
+PWD = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01
+cc-ldoption = $(call try-run, $(CC) $(1) -nostdlib -x c /dev/null -o "$$TMP",$(1),$(2))
+lxdialog := lxdialog/checklist.o lxdialog/util.o lxdialog/inputbox.o lxdialog/textbox.o lxdialog/yesno.o lxdialog/menubox.o
+quiet_cmd_cc_s_c = CC $(quiet_modtag)  $@
+OBJCOPYFLAGS = 
+src := scripts/kconfig
+HOST_ARCH_RISCV32 = 0x5032
+XDG_SEAT = seat0
+quiet_cmd_lzo = LZO     $@
+SSH_AGENT_PID = 1736
+UIMAGE_COMPRESSION = $(if $(2),$(2),none)
+modname = $(basetarget)
+hostprogs-y := conf nconf mconf kxgettext qconf gconf
+EXTRA_LDFLAGS := 
+multi-objs-m := 
+GTK_MODULES = gail:atk-bridge
+PYTHON = python
+multi-objs := $(subst ,, )
+cmd_fdtgrep = $(objtree)/tools/fdtgrep $(fdtgrep_props) -RT $< -n /chosen -n /config -O dtb | $(objtree)/tools/fdtgrep -r -O dtb - -o $@ -P u-boot,dm-pre-reloc -P u-boot,dm-spl -P u-boot,dm-tpl $(addprefix -P ,$(subst $\",,$(CONFIG_OF_SPL_REMOVE_PROPS)))
+_a_flags = $(filter-out $(AFLAGS_REMOVE_$(basetarget).o), $(orig_a_flags))
+cmd_efi_objcopy = $(OBJCOPY) -j .header -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel* -j .rela* -j .reloc $(if $(EFI_TARGET),$(EFI_TARGET),-O binary) $^ $@
+HOME = /home/ericedward
+UBOOTRELEASE = 
+quiet_cmd_host-cobjs = HOSTCC  $@
+as-instr = $(call try-run, printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+modbuiltin := -f ./scripts/Makefile.modbuiltin obj
+kxgettext-objs := kxgettext.o zconf.tab.o
+__c_flags = $(_c_flags)
+cmd_ld = $(LD) $(LDFLAGS) $(ldflags-y) $(LDFLAGS_$(@F)) $(filter-out FORCE,$^) -o $@
+LESSCLOSE = /usr/bin/lesspipe %s %s
+orig_c_flags = $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(KBUILD_SUBDIR_CCFLAGS) $(ccflags-y) $(CFLAGS_$(basetarget).o)
+cc-name = $(shell $(CC) -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)
+-*-command-variables-*- := obj=scripts/kconfig
+LOGNAME = ericedward
+binutils-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/binutils-version.sh $(AS))
+CONFIG_ := 
+_hostc_flags = $(HOSTCFLAGS)   $(HOST_EXTRACFLAGS) $(HOSTCFLAGS_$(basetarget).o)
++F = $(notdir $+)
+cc-option-align = $(subst -functions=0,, $(call cc-option,-falign-functions=0,-malign-functions=0))
+lib-m := 
+cmd_moc = $(KC_QT_MOC) -i $< -o $@
+kbuild-file := ./scripts/kconfig/Makefile
+LDR = arm-none-linux-gnueabihf-ldr
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+^D = $(patsubst %/,%,$(dir $^))
+KBUILD_VERBOSE = 0
+obj = scripts/kconfig
+obj-m := 
+XDG_VTNR = 2
+modname_flags = $(if $(filter 1,$(words $(modname))), -D"KBUILD_MODNAME=KBUILD_STR($(call name-fix,$(modname)))")
+host-csingle := 
+obj-dirs :=  scripts/kconfig/lxdialog/
+MAKELEVEL := 1
+cmd_cc_i_c = $(CPP) $(c_flags)   -o $@ $<
+COLORTERM = truecolor
+MAKE = make
+modorder-target := scripts/kconfig/modules.order
+DTC_FLAGS = 
+QT_IM_MODULE = ibus
+KCONFIG_CONFIG = .config
+UIMAGE_IN = $<
+SHLVL = 1
+quiet_cmd_cpp_lds_S = LDS     $@
+EXTRA_AFLAGS := 
+modorder := 
+KBUILD_DEFCONFIG = sandbox_defconfig
+cmd_shipped = cat $< > $@
+silent_kecho := :
+host-shared := scripts/kconfig/)
+quiet_cmd_cc_i_c = CPP $(quiet_modtag) $@
+AS = arm-none-linux-gnueabihf-as
+cmd_asn1_compiler = $(objtree)/tools/asn1_compiler $< $(subst .h,.c,$@) $(subst .c,.h,$@)
+cmd_host-cxxobjs = $(HOSTCXX) $(hostcxx_flags) -c -o $@ $<
+MAKEOVERRIDES = ${-*-command-variables-*-}
+UIMAGE_OPTS-y = 
+GNOME_SHELL_SESSION_MODE = ubuntu
+HOST_EXTRACFLAGS = $(shell $(CONFIG_SHELL) $(check-lxdialog) -ccflags) -DLOCALE $(shell $(CONFIG_SHELL) $(srctree)/$(src)/check.sh $(HOSTCC) $(HOSTCFLAGS))
+XDG_SESSION_ID = 2
+USER = ericedward
+subdir-y := $(subst ,, )
+CHECK = sparse
+.DEFAULT_GOAL := __build
+clean-dirs = tests/.cache
+XDG_CURRENT_DESKTOP = ubuntu:GNOME
+if_changed_dep = $(if $(strip $(any-prereq) $(arg-check) ), @set -e; $(echo-cmd) $(cmd_$(1)); scripts/basic/fixdep $(depfile) $@ '$(make-cmd)' > $(dot-target).tmp; rm -f $(depfile); mv -f $(dot-target).tmp $(dot-target).cmd)
+MAKECMDGOALS := stm32mp15_trusted_defconfig
+HOSTLOADLIBES_gconf = `pkg-config --libs gtk+-2.0 gmodule-2.0 libglade-2.0`
+modname-multi = $(sort $(foreach m,$(multi-used), $(if $(filter $(subst $(obj)/,,$*.o), $($(m:.o=-objs)) $($(m:.o=-y))),$(m:.o=))))
+CLASSPATH = .:/usr/local/java/jre1.8.0_271/lib
+RCS_TAR_IGNORE = --exclude SCCS --exclude BitKeeper --exclude .svn --exclude CVS --exclude .pc --exclude .hg --exclude .git
+quiet_cmd_bison = YACC    $@
+real-objs-y := 
+quiet_cmd_lzma = LZMA    $@
+%D = $(patsubst %/,%,$(dir $%))
+cmd_dt_S_dtb = ( echo '.section .dtb.init.rodata,"a"'; echo '.balign 16'; echo '.global __dtb_$(subst -,_,$(*F))_begin'; echo '__dtb_$(subst -,_,$(*F))_begin:'; echo '.incbin "$<" '; echo '__dtb_$(subst -,_,$(*F))_end:'; echo '.global __dtb_$(subst -,_,$(*F))_end'; echo '.balign 16'; ) > $@
+quiet_cmd_S_ttf = TTF     $@
+CPU = 
+hostcxx_flags = -Wp,-MD,$(depfile) $(__hostcxx_flags)
+CPUDIR = 
+ld-option = $(call try-run, $(CC) -x c /dev/null -c -o "$$TMPO" ; $(LD) $(1) "$$TMPO" -o "$$TMP",$(1),$(2))
+modkern_cflags = $(if $(part-of-module), $(KBUILD_CFLAGS_MODULE) $(CFLAGS_MODULE), $(KBUILD_CFLAGS_KERNEL) $(CFLAGS_KERNEL))
+cmd_as_o_S = $(CC) $(a_flags) -c -o $@ $<
+cmd_lz4 = (cat $(filter-out FORCE,$^) | lz4c -l -c1 stdin stdout && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+clean-files := qconf.moc .tmp_qtcheck .tmp_gtkcheck gconf.glade.h config.pot linux.pot
+HOST_EXTRACXXFLAGS = $(shell $(CONFIG_SHELL) $(srctree)/$(src)/check.sh $(HOSTCXX) $(HOSTCXXFLAGS))
+cmd_host-cmulti = $(HOSTCC) $(HOSTLDFLAGS) -o $@ $(addprefix $(obj)/,$($(@F)-objs)) $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+HOSTCFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer  -std=gnu11
+targets := 
+MAKE_COMMAND := make
+OLDPWD = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0
+NOSTDINC_FLAGS = 
+multi-used := $(subst ,, )
+Kconfig := Kconfig
+.VARIABLES := 
+quiet_cmd_cc_o_c = CC $(quiet_modtag)  $@
+echo-cmd = $(if $($(quiet)cmd_$(1)), echo '  $(call escsq,$($(quiet)cmd_$(1)))$(echo-why)';)
+multi-used-m := 
+*F = $(notdir $*)
+ldflags-y := $(subst ,, )
+depfile = $(subst $(comma),_,$(dot-target).d)
+KBUILD_KCONFIG = 
+HOSTCXXFLAGS_qconf.o = $(KC_QT_CFLAGS)
+asflags-y := $(subst ,,  )
+ld-ifversion = $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
+make-cmd = $(call escsq,$(subst $(pound),$$(pound),$(subst $$,$$$$,$(cmd_$(1)))))
+LEX = flex
+configfiles = $(wildcard $(srctree)/kernel/configs/$@ $(srctree)/arch/$(SRCARCH)/configs/$@)
+ARCH = arm
+MAKEFLAGS = prR -I/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 --no-print-directory -- $(MAKEOVERRIDES)
+ccflags-y := $(subst ,,  )
+quiet_cmd_dt_S_dtb = DTB     $@
+MFLAGS = -prR -I/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 --no-print-directory
+*D = $(patsubst %/,%,$(dir $*))
+as-option = $(call try-run, $(CC) $(KBUILD_CFLAGS) $(1) -c -x assembler /dev/null -o "$$TMP",$(1),$(2))
+HOSTOS = linux
+HOSTCXXFLAGS = -O2
++D = $(patsubst %/,%,$(dir $+))
+cc-option = $(call try-run, $(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
+SOC = 
+OBJDUMP = arm-none-linux-gnueabihf-objdump
+PYTHON2 = python2
+cmd_bison_h = $(YACC) -o/dev/null --defines=$@ -t -l $<
+__cpp_flags = $(_cpp_flags)
+quiet_cmd_uimage = UIMAGE  $(UIMAGE_OUT)
+cmd_dtc = mkdir -p $(dir ${dtc-tmp}) ; (cat $<; $(if $(u_boot_dtsi),echo '$(pound)include "$(u_boot_dtsi)"')) > $(pre-tmp); $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $(pre-tmp) ; $(DTC) -O dtb -o $@ -b 0 -i $(dir $<) $(DTC_FLAGS) -d $(depfile).dtc.tmp $(dtc-tmp) ; cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile) ; sed -i "s:$(pre-tmp):$(<):" $(depfile)
+BOARD = 
+__hostprogs := scripts/kconfig/conf scripts/kconfig/gconf scripts/kconfig/kxgettext scripts/kconfig/mconf scripts/kconfig/nconf scripts/kconfig/qconf
+hostc_flags = -Wp,-MD,$(depfile) $(__hostc_flags)
+objectify = $(foreach o,$(1),$(if $(filter /%,$(o)),$(o),$(obj)/$(o)))
+cmd_dtco = mkdir -p $(dir ${dtc-tmp}) ; $(CPP) $(dtc_cpp_flags) -x assembler-with-cpp -o $(dtc-tmp) $< ; $(DTC) -@ -O dtb -o $@ -b 0 -i $(dir $<) $(DTC_FLAGS) -d $(depfile).dtc.tmp $(dtc-tmp) ; cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
+save-cflags := 
+cmd_as_s_S = $(CPP) $(a_flags)   -o $@ $<
+cmd_xzmisc = (cat $(filter-out FORCE,$^) | xz --check=crc32 --lzma2=dict=1MiB) > $@ || (rm -f $@ ; false)
+cmd_efi_ld = $(LD) -nostdlib -znocombreloc -T $(EFI_LDS_PATH) -shared -Bsymbolic -s $^ -o $@
+STRIP = arm-none-linux-gnueabihf-strip
+QT_ACCESSIBILITY = 1
+UIMAGE_NAME = 'Linux-$(KERNELRELEASE)'
+MKIMAGEOUTPUT = /dev/null
+DTC = ./scripts/dtc/dtc
+dtbinst := -f scripts/Makefile.dtbinst obj
+CROSS_COMPILE = arm-none-linux-gnueabihf-
+link_multi_deps = $(filter $(addprefix $(obj)/, $($(subst $(obj)/,,$(@:.o=-objs))) $($(subst $(obj)/,,$(@:.o=-y)))), $^)
+cmd_gzip = (cat $(filter-out FORCE,$^) | gzip -n -f -9 > $@) || (rm -f $@ ; false)
+HOST_ARCH_RISCV64 = 0x5064
+HOSTARCH = x86_64
+escsq = $(subst $(squote),'\$(squote)',$1)
+TEXTDOMAINDIR = /usr/share/locale/
+cmd_cc_s_c = $(CC) $(c_flags) $(DISABLE_LTO) -fverbose-asm -S -o $@ $<
+cmd = @$(echo-cmd) $(cmd_$(1))
+MAKEFILES := 
+HOSTLOADLIBES_nconf = $(shell pkg-config --libs menuw panelw ncursesw 2>/dev/null || pkg-config --libs menu panel ncurses 2>/dev/null || echo "-lmenu -lpanel -lncurses"  )
+cmd_link_multi-y = $(LD) $(ld_flags) -r -o $@ $(link_multi_deps) $(cmd_secanalysis)
+SRCARCH := ..
+cmd_lzo = (cat $(filter-out FORCE,$^) | lzop -9 && $(call size_append, $(filter-out FORCE,$^))) > $@ || (rm -f $@ ; false)
+HOST_ARCH = 0x8664
+KBUILD_SRC = 
+CONFIG_SHELL = /bin/bash
+KBUILD_SUBDIR_ASFLAGS := $(subst ,, )
+<F = $(notdir $<)
+quiet_cmd_shipped = SHIPPED $@
+cmd_acpi_c_asl = $(CPP) -x assembler-with-cpp -D__ASSEMBLY__ -P $(UBOOTINCLUDE) -o $(ASL_TMP) $< && iasl -p $@ -tc $(ASL_TMP) $(if $(KBUILD_VERBOSE:1=), >/dev/null) && mv $(patsubst %.c,%.hex,$@) $@
+modkern_aflags := $(subst ,, )
+quiet_cmd_objcopy = OBJCOPY $@
+HOST_ARCH_X86_64 = 0x8664
+cmd_uimage = $(CONFIG_SHELL) $(MKIMAGE) -A $(UIMAGE_ARCH) -O linux -C $(UIMAGE_COMPRESSION) $(UIMAGE_OPTS-y) -T $(UIMAGE_TYPE) -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) -n $(UIMAGE_NAME) -d $(UIMAGE_IN) $(UIMAGE_OUT)
+cmd_S_efi = ( echo '.section .rodata.$*.init,"a"'; echo '.balign 16'; echo '.global __efi_$*_begin'; echo '__efi_$*_begin:'; echo '.incbin "$<" '; echo '__efi_$*_end:'; echo '.global __efi_$*_end'; echo '.balign 16'; ) > $@
+KBUILD_CPPFLAGS = -D__KERNEL__ -D__UBOOT__
+__subdir-m := 
+cmd_host-cobjs = $(HOSTCC) $(hostc_flags) -c -o $@ $<
+PERL = perl
+check-lxdialog := ./scripts/kconfig/lxdialog/check-lxdialog.sh
+HOSTCFLAGS_zconf.tab.o := -Iscripts/kconfig
+cmd_mkimage = $(objtree)/tools/mkimage $(MKIMAGEFLAGS_$(@F)) -d $< $@ >$(MKIMAGEOUTPUT) $(if $(KBUILD_VERBOSE:0=), && cat $(MKIMAGEOUTPUT))
+dtc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/dtc-version.sh $(DTC))
+quiet_cmd_mkimage = MKIMAGE $@
+UIMAGE_OUT = $@
+arg-check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) $(filter-out $(cmd_$@),   $(cmd_$(1))) )
+quiet_cmd_fdtgrep = FDTGREP $@
+ld_flags = $(LDFLAGS) $(ldflags-y)
+QT4_IM_MODULE = xim
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+KBUILD_CFLAGS = -Wall -Wstrict-prototypes -Wno-format-security -fno-builtin -ffreestanding -std=gnu11 -fshort-wchar -fno-strict-aliasing -fno-PIE
+RCS_FIND_IGNORE = \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/80f274e4_8917_44ab_88a5_de72e786c48c
+basetarget = $(basename $(notdir $@))
+^F = $(notdir $^)
+kbuild-dir := ./scripts/kconfig
+UIMAGE_ARCH = $(SRCARCH)
+GNOME_TERMINAL_SERVICE = :1.71
+SUFFIXES := 
+if_changed = $(if $(strip $(any-prereq) $(arg-check)), @set -e; $(echo-cmd) $(cmd_$(1)); printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd)
+cmd_link_multi-m = $(cmd_link_multi-y)
+baseprereq = $(basename $(notdir $<))
+EXTRA_CPPFLAGS := 
+addtree = $(if $(patsubst -I%,%,$(1)), $(if $(filter-out -I/%,$(1)),$(patsubst -I%,-I$(srctree)/%,$(1))) $(1))
+if_changed_rule = $(if $(strip $(any-prereq) $(arg-check) ), @set -e; $(rule_$(1)))
+cmd_files := 
+pre-tmp = $(subst $(comma),_,$(dot-target).pre.tmp)
+WINDOWPATH = 2
+_hostcxx_flags = $(HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) $(HOSTCXXFLAGS_$(basetarget).o)
+__subdir-y := 
+.INCLUDE_DIRS = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 /usr/include /usr/local/include /usr/include
+cmd_cpp_lds_S = $(CPP) $(cpp_flags) -P -C -U$(ARCH) -D__ASSEMBLY__ -DLINKER_SCRIPT -o $@ $<
+quiet_cmd_xzkern = XZKERN  $@
+_c_flags = $(filter-out $(CFLAGS_REMOVE_$(basetarget).o), $(orig_c_flags))
+GJS_DEBUG_OUTPUT = stderr
+orig_a_flags = $(KBUILD_CPPFLAGS) $(KBUILD_AFLAGS) $(KBUILD_SUBDIR_ASFLAGS) $(asflags-y) $(AFLAGS_$(basetarget).o)
+EFI_LDS_PATH = $(srctree)/arch/$(ARCH)/lib/$(EFI_LDS)
+KBUILD_EXTMOD = 
+KBUILD_CHECKSRC = 0
+fdtgrep_props := -b u-boot,dm-pre-reloc -b u-boot,dm-spl
+.RECIPEPREFIX := 
+size_check = 	actual=$( wc -c  | awk '{print $1}'); limit=$( printf "%d"  ); if test $actual -gt $limit; then echo " exceeds file size limit:" >&2; echo "  limit:  $(printf %#x $limit) bytes" >&2; echo "  actual: $(printf %#x $actual) bytes" >&2; echo "  excess: $(printf %#x $((actual - limit))) bytes" >&2; exit 1; fi
+MAKE_TERMERR = /dev/pts/0
+EXTRA_CFLAGS := 
+TMPOUT := 
+MAKE_HOST := x86_64-pc-linux-gnu
+name-fix = $(subst $(comma),_,$(subst -,_,$1))
+host-cxxmulti := scripts/kconfig/qconf
+cppflags-y := $(subst ,,  )
+cmd_host-csingle = $(HOSTCC) $(hostc_flags) -o $@ $< $(HOST_LOADLIBES) $(HOSTLOADLIBES_$(@F))
+LANG = en_US.UTF-8
+TERM = xterm-256color
+multi-objs-y := 
+empty := 
+SPL_TPL_ := 
+quote := "
+UBOOTVERSION = 2020.01-stm32mp-r1
+kecho := echo
+quiet_cmd_dtco = DTCO    $@
+MAKE_VERSION := 4.1
+UIMAGE_LOADADDR = arch_must_set_this
+
+
+
+
+
+
+
+%_defconfig: scripts/kconfig/conf
+	$(Q)$< $(silent) --defconfig=arch/$(SRCARCH)/configs/$@ $(Kconfig)
+
+%_config: %_defconfig
+	@:
+
+%.config: scripts/kconfig/conf
+	$(if $(call configfiles),, $(error No configuration exists for this target on this architecture))
+	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m .config $(configfiles)
+	+$(Q)yes "" | $(MAKE) -f $(srctree)/Makefile oldconfig
+
+scripts/kconfig/%.moc: scripts/kconfig/%.h scripts/kconfig/.tmp_qtcheck
+	$(call cmd,moc)
+
+scripts/kconfig/%.lex.c: scripts/kconfig/%.l FORCE
+	$(call if_changed,flex)
+
+scripts/kconfig/%.tab.c: scripts/kconfig/%.y FORCE
+	$(call if_changed,bison)
+
+scripts/kconfig/%.tab.h: scripts/kconfig/%.y FORCE
+	$(call if_changed,bison_h)
+
+scripts/kconfig/%: scripts/kconfig/%_shipped
+	$(call cmd,shipped)
+
+scripts/kconfig/%.dtb.S: scripts/kconfig/%.dtb
+	$(call cmd,dt_S_dtb)
+
+scripts/kconfig/%.dtb: scripts/kconfig/%.dts FORCE
+	$(call if_changed_dep,dtc)
+
+scripts/kconfig/%.dtbo: scripts/kconfig/%.dts FORCE
+	$(call if_changed_dep,dtco)
+
+scripts/kconfig/%.S: scripts/kconfig/%.ttf
+	$(call cmd,S_ttf)
+
+scripts/kconfig/%_efi.S: scripts/kconfig/%.efi
+	$(call cmd,S_efi)
+
+scripts/kconfig/%.efi: scripts/kconfig/%_efi.so
+	$(call cmd,efi_objcopy)
+
+scripts/kconfig/%_efi.so: scripts/kconfig/%.o scripts/kconfig/efi_crt0.o scripts/kconfig/efi_reloc.o scripts/kconfig/efi_freestanding.o
+	$(call cmd,efi_ld)
+
+scripts/kconfig/%.s: scripts/kconfig/%.c FORCE
+	$(call if_changed_dep,cc_s_c)
+
+scripts/kconfig/%.i: scripts/kconfig/%.c FORCE
+	$(call if_changed_dep,cc_i_c)
+
+scripts/kconfig/%.symtypes: scripts/kconfig/%.c FORCE
+	$(call cmd,cc_symtypes_c)
+
+scripts/kconfig/%.o: scripts/kconfig/%.c FORCE
+	$(call cmd,force_checksrc)
+	$(call if_changed_rule,cc_o_c)
+
+scripts/kconfig/%.lst: scripts/kconfig/%.c FORCE
+	$(call if_changed_dep,cc_lst_c)
+
+scripts/kconfig/%.s: scripts/kconfig/%.S FORCE
+	$(call if_changed_dep,as_s_S)
+
+scripts/kconfig/%.o: scripts/kconfig/%.S FORCE
+	$(call if_changed_dep,as_o_S)
+
+scripts/kconfig/%.lds: scripts/kconfig/%.lds.S FORCE
+	$(call if_changed_dep,cpp_lds_S)
+
+scripts/kconfig/%.asn1.c scripts/kconfig/%.asn1.h: scripts/kconfig/%.asn1 tools/asn1_compiler
+	$(call cmd,asn1_compiler)
+
+
+
+scripts/kconfig/lxdialog/yesno.o: scripts/kconfig/lxdialog/yesno.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+alldefconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+xconfig: scripts/kconfig/qconf
+	$< $(silent) $(Kconfig)
+
+tinyconfig:
+	$(Q)$(MAKE) -f $(srctree)/Makefile allnoconfig tiny.config
+
+scripts/kconfig/mconf.c:
+
+allyesconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/nconf.c:
+
+scripts/kconfig/lxdialog/inputbox.o: scripts/kconfig/lxdialog/inputbox.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+scripts/kconfig/kxgettext.o: scripts/kconfig/kxgettext.c FORCE
+	$(call if_changed_dep,host-cobjs)
+
+config: scripts/kconfig/conf
+	$< $(silent) --oldaskconfig $(Kconfig)
+
+scripts/kconfig/kxgettext: FORCE scripts/kconfig/kxgettext.o scripts/kconfig/zconf.tab.o
+	$(call if_changed,host-cmulti)
+
+FORCE:
+
+.PHONY: __build xconfig gconfig menuconfig config syncconfig update-po-config localmodconfig localyesconfig oldconfig allnoconfig allyesconfig allmodconfig alldefconfig randconfig listnewconfig olddefconfig oldnoconfig silentoldconfig savedefconfig defconfig kvmconfig xenconfig tinyconfig testconfig scripts/kconfig/dochecklxdialog FORCE
+
+scripts/kconfig/gconf.glade:
+
+scripts/kconfig/zconf.tab.o: scripts/kconfig/zconf.tab.c FORCE scripts/kconfig/zconf.lex.c
+	$(call if_changed_dep,host-cobjs)
+
+scripts/kconfig/Makefile:
+
+silentoldconfig: syncconfig
+	@echo "  WARNING: \"silentoldconfig\" has been renamed to \"syncconfig\""
+	@echo "            and is now an internal implementation detail."
+	@echo "            What you want is probably \"oldconfig\"."
+	@echo "            \"silentoldconfig\" will be removed after Linux 4.19"
+
+.SECONDARY:
+
+scripts/Makefile.uncmd_spl:
+
+scripts/kconfig/nconf.gui.o: scripts/kconfig/nconf.gui.c FORCE
+	$(call if_changed_dep,host-cobjs)
+
+xen.config:
+
+scripts/kconfig/dsdt.c: scripts/kconfig/dsdt.asl
+	$(call cmd,acpi_c_asl)
+	$(Q)sed -i -e "s,dsdt_aml_code,AmlCode," $@
+
+testconfig: scripts/kconfig/conf
+	$(PYTHON3) -B -m pytest $(srctree)/$(src)/tests \
+	-o cache_dir=$(abspath $(obj)/tests/.cache) \
+	$(if $(findstring 1,$(KBUILD_VERBOSE)),--capture=no)
+
+scripts/kconfig/conf: FORCE scripts/kconfig/conf.o scripts/kconfig/zconf.tab.o
+	$(call if_changed,host-cmulti)
+
+scripts/kconfig/conf.o: scripts/kconfig/conf.c FORCE
+	$(call if_changed_dep,host-cobjs)
+
+syncconfig: scripts/kconfig/conf
+	$(Q)mkdir -p include/config include/generated
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/lxdialog/util.o: scripts/kconfig/lxdialog/util.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+xenconfig: xen.config
+	@:
+
+.SUFFIXES:
+
+scripts/kconfig/dochecklxdialog:
+	$(Q)$(CONFIG_SHELL) $(check-lxdialog) -check $(HOSTCC) $(HOST_EXTRACFLAGS) $(HOSTLOADLIBES_mconf)
+
+defconfig: scripts/kconfig/conf
+	@$(kecho) "*** Default configuration is based on '$(KBUILD_DEFCONFIG)'"
+	$(Q)$< $(silent) --defconfig=arch/$(SRCARCH)/configs/$(KBUILD_DEFCONFIG) $(Kconfig)
+
+scripts/kconfig/lxdialog/menubox.c:
+
+scripts/kconfig/lxdialog/yesno.c:
+
+scripts/kconfig/lxdialog/inputbox.c:
+
+scripts/kconfig/kxgettext.c:
+
+scripts/kconfig/.tmp_qtcheck:
+
+help:
+	@echo  '  config	  - Update current config utilising a line-oriented program'
+	@echo  '  nconfig         - Update current config utilising a ncurses menu based'
+	@echo  '                    program'
+	@echo  '  menuconfig	  - Update current config utilising a menu based program'
+	@echo  '  xconfig	  - Update current config utilising a Qt based front-end'
+	@echo  '  gconfig	  - Update current config utilising a GTK+ based front-end'
+	@echo  '  oldconfig	  - Update current config utilising a provided .config as base'
+	@echo  '  localmodconfig  - Update current config disabling modules not loaded'
+	@echo  '  localyesconfig  - Update current config converting local mods to core'
+	@echo  '  defconfig	  - New config with default from ARCH supplied defconfig'
+	@echo  '  savedefconfig   - Save current config as ./defconfig (minimal config)'
+	@echo  '  allnoconfig	  - New config where all options are answered with no'
+	@echo  '  allyesconfig	  - New config where all options are accepted with yes'
+	@echo  '  allmodconfig	  - New config selecting modules when possible'
+	@echo  '  alldefconfig    - New config with all symbols set to default'
+	@echo  '  randconfig	  - New config with random answer to all options'
+	@echo  '  listnewconfig   - List new options'
+	@echo  '  olddefconfig	  - Same as oldconfig but sets new symbols to their'
+	@echo  '                    default value without prompting'
+
+kvm_guest.config:
+
+scripts/kconfig/zconf.tab.c: scripts/kconfig/zconf.y FORCE
+	$(call if_changed,bison)
+
+scripts/Makefile.host:
+
+scripts/kconfig/gconf: FORCE scripts/kconfig/gconf.o scripts/kconfig/zconf.tab.o
+	$(call if_changed,host-cmulti)
+
+scripts/kconfig/nconf.gui.c:
+
+scripts/kconfig/gconf.o: scripts/kconfig/gconf.c FORCE scripts/kconfig/.tmp_gtkcheck
+	$(call if_changed_dep,host-cobjs)
+
+oldconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/efi_reloc.o: arch/arm/lib/ FORCE
+	$(call cmd,force_checksrc)
+	$(call if_changed_rule,cc_o_c)
+
+scripts/kconfig/conf.c:
+
+olddefconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/lxdialog/util.c:
+
+.DEFAULT:
+
+allmodconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+localyesconfig: scripts/kconfig/conf
+	$(Q)mkdir -p include/config include/generated
+	$(Q)perl $(srctree)/$(src)/streamline_config.pl --$@ $(srctree) $(Kconfig) > .tmp.config
+	$(Q)if [ -f .config ]; then 					\
+			cmp -s .tmp.config .config ||			\
+			(mv -f .config .config.old.1;			\
+			 mv -f .tmp.config .config;			\
+			 $< $(silent) --oldconfig $(Kconfig);		\
+			 mv -f .config.old.1 .config.old)		\
+	else								\
+			mv -f .tmp.config .config;			\
+			$< $(silent) --oldconfig $(Kconfig);		\
+	fi
+	$(Q)rm -f .tmp.config
+
+scripts/kconfig/lxdialog/textbox.o: scripts/kconfig/lxdialog/textbox.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+scripts/kconfig/gconf.glade.h: scripts/kconfig/gconf.glade
+	$(Q)intltool-extract --type=gettext/glade --srcdir=$(srctree) \
+	$(obj)/gconf.glade
+
+kvmconfig: kvm_guest.config
+	@:
+
+oldnoconfig: olddefconfig
+	@echo "  WARNING: \"oldnoconfig\" target will be removed after Linux 4.19"
+	@echo "            Please use \"olddefconfig\" instead, which is an alias."
+
+scripts/kconfig/lxdialog/checklist.c:
+
+localmodconfig: scripts/kconfig/conf
+	$(Q)mkdir -p include/config include/generated
+	$(Q)perl $(srctree)/$(src)/streamline_config.pl --$@ $(srctree) $(Kconfig) > .tmp.config
+	$(Q)if [ -f .config ]; then 					\
+			cmp -s .tmp.config .config ||			\
+			(mv -f .config .config.old.1;			\
+			 mv -f .tmp.config .config;			\
+			 $< $(silent) --oldconfig $(Kconfig);		\
+			 mv -f .config.old.1 .config.old)		\
+	else								\
+			mv -f .tmp.config .config;			\
+			$< $(silent) --oldconfig $(Kconfig);		\
+	fi
+	$(Q)rm -f .tmp.config
+
+scripts/kconfig/qconf.moc:
+
+update-po-config: scripts/kconfig/kxgettext scripts/kconfig/gconf.glade.h
+	$(Q)$(kecho) "  GEN     config.pot"
+	$(Q)xgettext --default-domain=linux                         \
+	    --add-comments --keyword=_ --keyword=N_                 \
+	    --from-code=UTF-8                                       \
+	    --files-from=$(srctree)/scripts/kconfig/POTFILES.in     \
+	    --directory=$(srctree) --directory=$(objtree)           \
+	    --output $(obj)/config.pot
+	$(Q)sed -i s/CHARSET/UTF-8/ $(obj)/config.pot
+	$(Q)(for i in `ls $(srctree)/arch/*/Kconfig      \
+	    $(srctree)/arch/*/um/Kconfig`;               \
+	    do                                           \
+		$(kecho) "  GEN     $$i";                    \
+		$(obj)/kxgettext $$i                     \
+		     >> $(obj)/config.pot;               \
+	    done )
+	$(Q)$(kecho) "  GEN     linux.pot"
+	$(Q)msguniq --sort-by-file --to-code=UTF-8 $(obj)/config.pot \
+	    --output $(obj)/linux.pot
+	$(Q)rm -f $(obj)/config.pot
+
+scripts/kconfig/mconf: FORCE scripts/kconfig/mconf.o scripts/kconfig/zconf.tab.o scripts/kconfig/lxdialog/checklist.o scripts/kconfig/lxdialog/util.o scripts/kconfig/lxdialog/inputbox.o scripts/kconfig/lxdialog/textbox.o scripts/kconfig/lxdialog/yesno.o scripts/kconfig/lxdialog/menubox.o
+	$(call if_changed,host-cmulti)
+
+scripts/kconfig/dsdt.asl:
+
+listnewconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/nconf: FORCE scripts/kconfig/nconf.o scripts/kconfig/zconf.tab.o scripts/kconfig/nconf.gui.o
+	$(call if_changed,host-cmulti)
+
+scripts/kconfig/mconf.o: scripts/kconfig/mconf.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+scripts/kconfig/lxdialog/checklist.o: scripts/kconfig/lxdialog/checklist.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+__build: scripts/kconfig/dochecklxdialog
+	@:
+
+scripts/kconfig/nconf.o: scripts/kconfig/nconf.c FORCE
+	$(call if_changed_dep,host-cobjs)
+
+scripts/Makefile.lib:
+
+scripts/kconfig/modules.order: FORCE
+	$(Q)(cat /dev/null; $(modorder-cmds)) > $@
+
+scripts/Makefile.build:
+
+scripts/kconfig/zconf.lex.c: scripts/kconfig/zconf.l FORCE
+	$(call if_changed,flex)
+
+scripts/kconfig/efi_crt0.o: arch/arm/lib/ FORCE
+	$(call if_changed_dep,as_o_S)
+
+scripts/kconfig/zconf.l:
+
+randconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/zconf.y:
+
+scripts/kconfig/qconf: FORCE scripts/kconfig/zconf.tab.o scripts/kconfig/qconf.o
+	$(call if_changed,host-cxxmulti)
+
+scripts/kconfig/qconf.o: scripts/kconfig/qconf.cc FORCE scripts/kconfig/.tmp_qtcheck scripts/kconfig/qconf.moc
+	$(call if_changed_dep,host-cxxobjs)
+
+include/config/auto.conf:
+
+menuconfig: scripts/kconfig/mconf
+	$< $(silent) $(Kconfig)
+
+.DELETE_ON_ERROR:
+
+scripts/Kbuild.include:
+
+savedefconfig: scripts/kconfig/conf
+	$< $(silent) --$@=defconfig $(Kconfig)
+
+scripts/kconfig/gconf.c:
+
+gconfig: scripts/kconfig/gconf
+	$< $(silent) $(Kconfig)
+
+scripts/kconfig/.tmp_gtkcheck:
+
+stm32mp15_trusted_defconfig: scripts/kconfig/conf
+	$(Q)$< $(silent) --defconfig=arch/$(SRCARCH)/configs/$@ $(Kconfig)
+
+arch/arm/lib/:
+
+scripts/kconfig/qconf.cc:
+
+nconfig: scripts/kconfig/nconf
+	$< $(silent) $(Kconfig)
+
+allnoconfig: scripts/kconfig/conf
+	$< $(silent) --$@ $(Kconfig)
+
+scripts/kconfig/lxdialog/textbox.c:
+
+include/autoconf.mk:
+
+scripts/kconfig/lxdialog/menubox.o: scripts/kconfig/lxdialog/menubox.c FORCE scripts/kconfig/dochecklxdialog
+	$(call if_changed_dep,host-cobjs)
+
+
+
+
+
+
+
+
+
+cc-cross-prefix = $(word 1, $(foreach c,$(1), $(shell set -e; if (which $(strip $(c))$(CC)) > /dev/null 2>&1 ; then echo $(c); fi)))
+GNUMAKEFLAGS := 
+<D = $(patsubst %/,%,$(dir $<))
+?F = $(notdir $?)
+DESKTOP_SESSION = ubuntu
+.SHELLFLAGS := -c
+KBUILD_MODULES := 
+PATCHLEVEL = 01
+XDG_SESSION_TYPE = x11
+HOST_ARCH_X86 = 0x0386
+PYTHON3 = python3
+?D = $(patsubst %/,%,$(dir $?))
+cc-ifversion = $(shell [ $(cc-version) $(1) $(2) ] && echo $(3) || echo $(4))
+filechk = 	$(Q)set -e; $(kecho) '  CHK     $@'; mkdir -p $(dir $@); $(filechk_$(1)) < $< > $@.tmp; if [ -r $@ ] && cmp -s $@ $@.tmp; then rm -f $@.tmp; else $(kecho) '  UPD     $@'; mv -f $@.tmp $@; fi
+CHECK = sparse
+@D = $(patsubst %/,%,$(dir $@))
+XAUTHORITY = /run/user/1000/gdm/Xauthority
+GDMSESSION = ubuntu
+XMODIFIERS = @im=none
+UBOOTINCLUDE := 
+CURDIR := /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01
+ld-version = $(shell $(LD) --version | $(srctree)/scripts/ld-version.sh)
+SHELL = /bin/sh
+Q = @
+VTE_VERSION = 5202
+PHONY := _all all scripts_basic outputmakefile checkstack ubootrelease ubootversion coccicheck FORCE
+MODVERDIR := .tmp_versions
+_ = /usr/bin/make
+HOST_ARCH_AARCH64 = 0xaa64
+SPL_ := 
+cc-fullversion = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh -p $(CC))
+XDG_CONFIG_DIRS = /etc/xdg/xdg-ubuntu:/etc/xdg
+BOARDDIR := 
+MAKEFILE_LIST :=  Makefile include/host_arch.h scripts/Kbuild.include
+CHECKFLAGS := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ -Wbitwise -Wno-return-void -D__CHECK_ENDIAN__ 
+@F = $(notdir $@)
+IM_CONFIG_PHASE = 2
+USERNAME = ericedward
+srctree := .
+HOSTCC = cc
+XDG_DATA_DIRS = /usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop
+KBUILD_CFLAGS := -Wall -Wstrict-prototypes -Wno-format-security -fno-builtin -ffreestanding -std=gnu11 -fshort-wchar -fno-strict-aliasing -fno-PIE
+cc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-version.sh $(CC))
+DBUS_SESSION_BUS_ADDRESS = unix:path=/run/user/1000/bus
+VERSION = 2020
+timestamp_h := include/generated/timestamp_autogenerated.h
+CC = $(CROSS_COMPILE)gcc
+dot-config := 1
+cmd_rmdirs = rm -rf $(rm-dirs)
+LC_COLLATE = C
+AWK = awk
+KBUILD_AFLAGS := -D__ASSEMBLY__ -fno-PIE
+dot-target = $(dir $@).$(notdir $@)
+CLUTTER_IM_MODULE = xim
+squote := '
+LESSOPEN = | /usr/bin/lesspipe %s
+CPP = $(CC) -E
+cmd_genenv = $(OBJCOPY) --dump-section .rodata.default_environment=$@ env/common.o; sed --in-place -e 's/\x00/\x0A/g' $@
+cc-option-yn = $(call try-run, $(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",y,n)
+MAKE_HOST := x86_64-pc-linux-gnu
+PATH = /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/arm/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin:/usr/local/java/jre1.8.0_271/bin
+flags = $(foreach o,$($(1)),$(if $(filter -I%,$(o)),$(call addtree,$(o)),$(o)))
+LD = $(CROSS_COMPILE)ld.bfd
+HOST_ARCH_ARM = 0x00a7
+clean := -f ./scripts/Makefile.clean obj
+HOSTLDFLAGS := 
+GPG_AGENT_INFO = /run/user/1000/gnupg/S.gpg-agent:0:1
+YACC = bison
+SESSION_MANAGER = local/ubuntu:@/tmp/.ICE-unix/1663,unix/ubuntu:/tmp/.ICE-unix/1663
+NOSTDINC_FLAGS := 
+space := $(subst ,, )
+XDG_RUNTIME_DIR = /run/user/1000
+hdr-inst := -f ./scripts/Makefile.headersinst obj
+pound := #
+TEXTDOMAIN = im-config
+VENDOR := 
+try-run = $(shell set -e; TMP="$(TMPOUT).$$$$.tmp"; TMPO="$(TMPOUT).$$$$.o"; TMPSU="$(TMPOUT).$$$$.su"; if ($(1)) >/dev/null 2>&1; then echo "$(2)"; else echo "$(3)"; fi; rm -f "$$TMP" "$$TMPO" "$$TMPSU")
+comma := ,
+any-prereq = $(filter-out $(PHONY),$?) $(filter-out $(PHONY) $(wildcard $^),$^)
+KBUILD_BUILTIN := 1
+cmd_rmfiles = rm -f $(rm-files)
+version_h := include/generated/version_autogenerated.h
+VPATH := .
+empty := 
+AR = $(CROSS_COMPILE)ar
+XDG_MENU_PREFIX = gnome-
+targets := 
+LC_NUMERIC = C
+ar-option = $(call try-run, $(AR) rc$(1) "$$TMP",$(1),$(2))
+LDFLAGS := 
+build := -f ./scripts/Makefile.build obj
+EXTRAVERSION = -stm32mp-r1
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
+CDPATH := 
+objtree := .
+cc-disable-warning = $(call try-run, $(CC) $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) -W$(strip $(1)) -c -x c /dev/null -o "$$TMP",-Wno-$(strip $(1)))
+LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:
+XDG_SESSION_DESKTOP = ubuntu
+SUBLEVEL = 
+SSH_AUTH_SOCK = /run/user/1000/keyring/ssh
+%F = $(notdir $%)
+DISPLAY = :0
+KCONFIG_CONFIG = .config
+no-dot-config-targets := clean clobber mrproper distclean help %docs check% coccicheck ubootversion backup tests check qcheck
+HOSTCXX = c++
+GTK_IM_MODULE = xim
+CSTD_FLAG := -std=gnu11
+PWD = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01
+cc-ldoption = $(call try-run, $(CC) $(1) -nostdlib -x c /dev/null -o "$$TMP",$(1),$(2))
+OBJCOPYFLAGS := 
+src := .
+HOST_ARCH_RISCV32 = 0x5032
+XDG_SEAT = seat0
+SSH_AGENT_PID = 1736
+mixed-targets := 0
+GTK_MODULES = gail:atk-bridge
+PYTHON = python
+HOME = /home/ericedward
+UBOOTRELEASE = $(shell cat include/config/uboot.release 2> /dev/null)
+as-instr = $(call try-run, printf "%b\n" "$(1)" | $(CC) $(KBUILD_AFLAGS) -c -x assembler -o "$$TMP" -,$(2),$(3))
+modbuiltin := -f ./scripts/Makefile.modbuiltin obj
+LESSCLOSE = /usr/bin/lesspipe %s %s
+cc-name = $(shell $(CC) -v 2>&1 | grep -q "clang version" && echo clang || echo gcc)
+LOGNAME = ericedward
+binutils-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/binutils-version.sh $(AS))
+cc-option-align = $(subst -functions=0,, $(call cc-option,-falign-functions=0,-malign-functions=0))
+MAKE_VERSION := 4.1
+GNOME_DESKTOP_SESSION_ID = this-is-deprecated
+^D = $(patsubst %/,%,$(dir $^))
+KBUILD_VERBOSE = 0
+obj := .
+XDG_VTNR = 2
+MAKELEVEL := 0
+COLORTERM = truecolor
+MAKE = $(MAKE_COMMAND)
+MAKECMDGOALS := stm32mp15_trusted_defconfig
+QT_IM_MODULE = ibus
+SHLVL = 1
+KBUILD_DEFCONFIG := sandbox_defconfig
+config-targets := 1
+silent_kecho := :
+NM = $(CROSS_COMPILE)nm
+AS = $(CROSS_COMPILE)as
+GNOME_SHELL_SESSION_MODE = ubuntu
+DTC_FLAGS := 
+LDR = $(CROSS_COMPILE)ldr
+XDG_SESSION_ID = 2
+USER = ericedward
+.DEFAULT_GOAL := _all
+XDG_CURRENT_DESKTOP = ubuntu:GNOME
+if_changed_dep = $(if $(strip $(any-prereq) $(arg-check) ), @set -e; $(echo-cmd) $(cmd_$(1)); scripts/basic/fixdep $(depfile) $@ '$(make-cmd)' > $(dot-target).tmp; rm -f $(depfile); mv -f $(dot-target).tmp $(dot-target).cmd)
+NAME = 
+CLASSPATH = .:/usr/local/java/jre1.8.0_271/lib
+RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn --exclude CVS --exclude .pc --exclude .hg --exclude .git
+build-dir = $(patsubst %/,%,$(dir $@))
+%D = $(patsubst %/,%,$(dir $%))
+CPU := 
+CPUDIR := 
+ld-option = $(call try-run, $(CC) -x c /dev/null -c -o "$$TMPO" ; $(LD) $(1) "$$TMPO" -o "$$TMP",$(1),$(2))
+HOSTCFLAGS = -Wall -Wstrict-prototypes -O2 -fomit-frame-pointer $(if $(CONFIG_TOOLS_DEBUG),-g) $(CSTD_FLAG)
+MAKE_COMMAND := make
+OLDPWD = /home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0
+SOC := 
+.VARIABLES := 
+echo-cmd = $(if $($(quiet)cmd_$(1)), echo '  $(call escsq,$($(quiet)cmd_$(1)))$(echo-why)';)
+*F = $(notdir $*)
+depfile = $(subst $(comma),_,$(dot-target).d)
+KBUILD_KCONFIG := 
+ld-ifversion = $(shell [ $(ld-version) $(1) $(2) ] && echo $(3) || echo $(4))
+defaultenv_h := include/generated/defaultenv_autogenerated.h
+make-cmd = $(call escsq,$(subst $(pound),$$(pound),$(subst $$,$$$$,$(cmd_$(1)))))
+LEX = flex
+ARCH = arm
+MAKEFLAGS = prR -I/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 --no-print-directory
+baseprereq = $(basename $(notdir $<))
+MFLAGS = -prR -I/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01 --no-print-directory
+*D = $(patsubst %/,%,$(dir $*))
+as-option = $(call try-run, $(CC) $(KBUILD_CFLAGS) $(1) -c -x assembler /dev/null -o "$$TMP",$(1),$(2))
+HOSTOS := linux
+HOSTCXXFLAGS = -O2
+quiet = quiet_
++D = $(patsubst %/,%,$(dir $+))
+cc-option = $(call try-run, $(CC) -Werror $(KBUILD_CPPFLAGS) $(KBUILD_CFLAGS) $(1) -c -x c /dev/null -o "$$TMP",$(1),$(2))
+SPL_TPL_ := 
+OBJDUMP = $(CROSS_COMPILE)objdump
+PYTHON2 = python2
++F = $(notdir $+)
+objectify = $(foreach o,$(1),$(if $(filter /%,$(o)),$(o),$(obj)/$(o)))
+BOARD := 
+STRIP = $(CROSS_COMPILE)strip
+QT_ACCESSIBILITY = 1
+DTC = $(objtree)/scripts/dtc/dtc
+dtbinst := -f scripts/Makefile.dtbinst obj
+CROSS_COMPILE = arm-none-linux-gnueabihf-
+HOST_ARCH_RISCV64 = 0x5064
+HOSTARCH := x86_64
+escsq = $(subst $(squote),'\$(squote)',$1)
+TEXTDOMAINDIR = /usr/share/locale/
+cmd = @$(echo-cmd) $(cmd_$(1))
+MAKEFILES := 
+HOST_ARCH = $(HOST_ARCH_X86_64)
+KBUILD_SRC := 
+CONFIG_SHELL := /bin/bash
+<F = $(notdir $<)
+quiet_cmd_rmdirs = $(if $(wildcard $(rm-dirs)),CLEAN   $(wildcard $(rm-dirs)))
+HOST_ARCH_X86_64 = 0x8664
+quiet_cmd_rmfiles = $(if $(wildcard $(rm-files)),CLEAN   $(wildcard $(rm-files)))
+KBUILD_CPPFLAGS := -D__KERNEL__ -D__UBOOT__
+PERL = perl
+LC_ALL := 
+quiet_cmd_genenv = GENENV $@
+dtc-version = $(shell $(CONFIG_SHELL) $(srctree)/scripts/dtc-version.sh $(DTC))
+arg-check = $(strip $(filter-out $(cmd_$(1)), $(cmd_$@)) $(filter-out $(cmd_$@),   $(cmd_$(1))) )
+target-dir = $(dir $@)
+QT4_IM_MODULE = xim
+GJS_DEBUG_TOPICS = JS ERROR;JS LOG
+quiet_kecho := echo
+RCS_FIND_IGNORE := \( -name SCCS -o -name BitKeeper -o -name .svn -o -name CVS -o -name .pc -o -name .hg -o -name .git \) -prune -o
+GNOME_TERMINAL_SCREEN = /org/gnome/Terminal/screen/80f274e4_8917_44ab_88a5_de72e786c48c
+basetarget = $(basename $(notdir $@))
+^F = $(notdir $^)
+OBJCOPY = $(CROSS_COMPILE)objcopy
+GNOME_TERMINAL_SERVICE = :1.71
+SUFFIXES := 
+if_changed = $(if $(strip $(any-prereq) $(arg-check)), @set -e; $(echo-cmd) $(cmd_$(1)); printf '%s\n' 'cmd_$@ := $(make-cmd)' > $(dot-target).cmd)
+addtree = $(if $(patsubst -I%,%,$(1)), $(if $(filter-out -I/%,$(1)),$(patsubst -I%,-I$(srctree)/%,$(1))) $(1))
+if_changed_rule = $(if $(strip $(any-prereq) $(arg-check) ), @set -e; $(rule_$(1)))
+cmd_files := 
+WINDOWPATH = 2
+GREP_OPTIONS := 
+.INCLUDE_DIRS = /usr/include /usr/local/include /usr/include
+GJS_DEBUG_OUTPUT = stderr
+KBUILD_EXTMOD := 
+KBUILD_CHECKSRC = 0
+.RECIPEPREFIX := 
+size_check = 	actual=$$( wc -c $1 | awk '{print $$1}'); limit=$$( printf "%d" $2 ); if test $$actual -gt $$limit; then echo "$1 exceeds file size limit:" >&2; echo "  limit:  $$(printf %#x $$limit) bytes" >&2; echo "  actual: $$(printf %#x $$actual) bytes" >&2; echo "  excess: $$(printf %#x $$((actual - limit))) bytes" >&2; exit 1; fi
+MAKE_TERMERR := /dev/pts/0
+TMPOUT := 
+LANG = en_US.UTF-8
+TERM = xterm-256color
+quote := "
+UBOOTVERSION = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
+kecho := echo
+
+
+
+
+
+
+
+scripts/basic/%: scripts_basic
+	
+
+%config: scripts_basic outputmakefile FORCE
+	$(Q)$(MAKE) $(build)=scripts/kconfig $@
+
+%.s: %.c prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%.i: %.c prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%.o: %.c prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%.lst: %.c prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%.s: %.S prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%.o: %.S prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%.symtypes: %.c prepare scripts FORCE
+	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+
+%/: prepare scripts FORCE
+	$(cmd_crmodverdir)
+	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
+	$(build)=$(build-dir)
+
+%.ko: prepare scripts FORCE
+	$(cmd_crmodverdir)
+	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1)   \
+	$(build)=$(build-dir) $(@:.ko=.o)
+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
+
+
+
+ubootversion:
+	@echo $(UBOOTVERSION)
+
+/: prepare scripts FORCE
+	$(cmd_crmodverdir)
+	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
+	$(build)=$(build-dir)
+
+outputmakefile:
+
+/home/ericedward/linux_space/test/u-boot-stm32mp-2020.01-r0/u-boot-stm32mp-2020.01/Makefile:
+	
+
+config: scripts_basic outputmakefile FORCE
+	$(Q)$(MAKE) $(build)=scripts/kconfig $@
+
+FORCE:
+
+.PHONY: _all all scripts_basic outputmakefile checkstack ubootrelease ubootversion coccicheck FORCE
+
+scripts:
+
+ubootrelease:
+	@echo "$(UBOOTVERSION)$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion $(srctree))"
+
+u-boot.bin:
+
+.SUFFIXES:
+
+Makefile:
+	
+
+prepare:
+
+include/host_arch.h:
+
+all:
+
+checkstack:
+	$(OBJDUMP) -d u-boot $$(find . -name u-boot-spl) | \
+	$(PERL) $(src)/scripts/checkstack.pl $(ARCH)
+
+scripts/Kbuild.include:
+	
+
+.DEFAULT:
+
+u-boot-initial-env: u-boot.bin
+	$(call if_changed,genenv)
+
+scripts_basic:
+	$(Q)$(MAKE) $(build)=scripts/basic
+	$(Q)rm -f .tmp_quiet_recordmcount
+
+_all: all
+
+.SECONDARY:
+
+coccicheck:
+	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/$@
+
+.DELETE_ON_ERROR:
+
+stm32mp15_trusted_defconfig: scripts_basic outputmakefile FORCE
+	$(Q)$(MAKE) $(build)=scripts/kconfig $@
+
+
+
+
+
+

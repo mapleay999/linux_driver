@@ -295,7 +295,7 @@ static int chrdev_init(void) {
     /* 1. 申请主设备号：动态申请方式（推荐方式） */
     if (alloc_chrdev_region(&chrdev.dev_num, MINOR_BASE, MINOR_COUNT, DEVICE_NAME))
     {
-        printk("chrdev_init: 分配 chrdev 的字符设备号操作失败！！！\n");
+        printk(KERN_ERR"chrdev_init:alloc_chrdev_region:申请字符设备的号域失败！！！\n");
         err = -ENODEV;
         goto fail_devnum;
     }
@@ -304,6 +304,7 @@ static int chrdev_init(void) {
     /* 2. 初始化缓冲区 */
     chrdev.dev_data.buffer = kmalloc(BUF_SIZE, GFP_KERNEL);
     if (!chrdev.dev_data.buffer) {
+        printk(KERN_ERR"chrdev_init:kmalloc:申请字符设备私有数据存储空间失败！！！\n");
         err = -ENOMEM;
         goto fail_buffer;
     }
@@ -319,7 +320,7 @@ static int chrdev_init(void) {
     /* 4. 注册 cdev 结构体到 Linux 内核 */
     if (cdev_add(&chrdev.dev, chrdev.dev_num, MINOR_COUNT) < 0)
     {
-        printk("chrdev_init: 添加 chrdev 字符设备失败！！！\n");
+        printk(KERN_ERR"chrdev_init:cdev_add:注册字符设备失败！！！\n");
         goto fail_cdev;
     }
     
@@ -341,7 +342,7 @@ static int chrdev_init(void) {
         goto fail_device;
     }
     
-    printk(KERN_INFO "chrdev_init:Hello Kernel! 模块已加载！\r\n"); 
+    printk(KERN_INFO"chrdev_init:Hello Kernel! 字符设备模块已加载！\r\n"); 
     return 0;
 
 fail_device:
@@ -373,7 +374,7 @@ static void chrdev_exit(void) {
     /* 4. 释放缓冲区 */
     kfree(chrdev.dev_data.buffer);
     
-    printk(KERN_INFO "chrdev_exit:Goodbye Kernel! 字符设备模块已卸载！\r\n");
+    printk(KERN_INFO"chrdev_exit:Goodbye Kernel!字符设备模块已卸载！\r\n");
 }
 
 static int led_probe(struct platform_device *pdev)
@@ -383,6 +384,7 @@ static int led_probe(struct platform_device *pdev)
     const char* str;
     struct property *proper;
     
+    printk(KERN_INFO"虚拟的平台总线: platform_driver.probe:“设备”与“驱动”已匹配成功！\r\n");
 
     /* 1. 获取设备节点 */
     chrdev.nd = of_find_node_by_path("/stm32mp1_led");
@@ -390,13 +392,13 @@ static int led_probe(struct platform_device *pdev)
         printk(KERN_ERR "设备树：解析设备节点失败！");
         return -EINVAL;
     } else {
-        printk("设备树：已获取到设备节点：stm32mp1_led node found!\r\n");
+        printk("设备树: 已获取到设备节点: stm32mp1_led node found!\r\n");
     }
 
     /* 2. 获取 compatible 属性内容 */
     proper = of_find_property(chrdev.nd, "compatible", NULL);
     if (proper == NULL) {
-        printk(KERN_ERR "设备树：解析属性内容失败！");
+        printk(KERN_ERR "设备树: 解析 compatible 属性内容失败！");
         return -EINVAL;
     } else {
         printk("compatible = %s\r\n", (char*)proper->value);
@@ -433,30 +435,30 @@ static int led_probe(struct platform_device *pdev)
     GPIOI_PUPDR_PI         = of_iomap(chrdev.nd, 4);
     GPIOI_BSRR_PI          = of_iomap(chrdev.nd, 5);
 
-    led_init(); //初始化LED硬件
+    led_init(); /* 初始化LED硬件 */
 
     /* 2. 注册字符设备 */
     if(chrdev_init()){
         led_deinit();
         return -1;
     }
-    
+
     return 0;
 }
 
 static int led_remove(struct platform_device *pdev)
 {
-    /* 0. 注销硬件资源：解除内核中注册的引脚映射 */
-    led_deinit();
-    chrdev_exit();
-    printk(KERN_INFO "平台设备驱动框架:platform_driver:led_remove：正在被调用！\n");
+    chrdev_exit(); /* 注销字符设备资源 */
+    led_deinit();  /* 注销硬件资源     */
+    
+    printk(KERN_INFO "虚拟的平台总线: platform_driver.remove: 驱动已注销！\n");
     return 0;
 }
 
 
 static const struct of_device_id dts_driver_of_match[] = {
-    { .compatible = "Mapleay-MP157d-led" }, // 匹配设备树中的 compatible 值
-    { } // 终止符
+    { .compatible = "Mapleay-MP157d-led" }, /* 匹配设备树中的 compatible 值 */
+    { } /* 终止符 */
 };
 
 static struct platform_driver chrdev_platform_drv = {
@@ -468,7 +470,7 @@ static struct platform_driver chrdev_platform_drv = {
                *             第二：不能初始化为 NULL ！！ 否则模块崩溃！！
                */
               .name = "not_matched_strs",
-              .of_match_table = dts_driver_of_match, //使用设备树方式
+              .of_match_table = dts_driver_of_match, /* 使用设备树方式 */
     },
 };
 
@@ -486,4 +488,4 @@ module_init(chrdev_drv_init);
 module_exit(chrdev_drv_exit);
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Mapleay");
-MODULE_DESCRIPTION("the driver partition of a demo of platform device driver model.");
+MODULE_DESCRIPTION("A demo driver of platform device driver model with DeviceTree.");
